@@ -11,7 +11,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: darken($button-color, 10);
+    background-color: $button-accent-color;
   }
 
   &--active,

@@ -8,22 +8,24 @@ function Controlpad(props) {
   return (
     <div className='controls'>
       <div className='controls__module'>
-        <ToggleSwitch className='controls__toggle'>power</ToggleSwitch>
-        {/* <div class="switchContainer" id="switch5Container">
-              <h2>switch 5</h2>
-              <input type="checkbox" id="switch5">
-              <label class="switch5Toggle" for="switch5"><span>$</span></label>
-            </div> */}
-
-        <div className='controls__toggle'>settings</div>
+        <ToggleSwitch id='power' className='toggle-switch-type-B'>
+          <span>O</span>
+        </ToggleSwitch>
+        <ToggleSwitch id='settings' className='toggle-switch-type-B'>
+          <span>G</span>
+        </ToggleSwitch>
       </div>
       <div className='controls__module'>
         <div>current time / max time</div>
         <div>current time slider</div>
       </div>
       <div className='controls__module'>
-        <div className='controls__toggle'>record</div>
-        <div className='controls__toggle'>play</div>
+        <ToggleSwitch id='record' className='toggle-switch-type-B'>
+          <span>R</span>
+        </ToggleSwitch>
+        <ToggleSwitch id='play' className='toggle-switch-type-B'>
+          <span>P</span>
+        </ToggleSwitch>
       </div>
       <div className='controls__module'>
         <div>volume slider</div>
