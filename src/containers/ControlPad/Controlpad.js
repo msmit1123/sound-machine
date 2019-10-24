@@ -44,6 +44,9 @@ function Controlpad(props) {
         <div>volume slider</div>
         <div>now playing</div>
       </div>
+      <div className='controls__module'>
+        <h3>Das Sound Machine</h3>
+      </div>
     </div>
   );
 }

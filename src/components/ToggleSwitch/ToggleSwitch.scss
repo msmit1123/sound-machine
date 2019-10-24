@@ -54,7 +54,7 @@
   }
 }
 
-/* --- push button with background light --- */
+/* --- push in/out button with background light --- */
 .toggle-switch-type-B {
   $switch-type: &;
   --switch-active-color: rgb(255, 189, 45);
@@ -125,7 +125,6 @@
       &:after {
         top: calc(var(--switch-height) + var(--switch-light-thickness));
         height: var(--switch-height);
-        //background-color: rgb(85, 85, 85);
       }
       span {
         top: calc(
@@ -186,3 +185,91 @@
     }
   }
 }
+
+.toggle-switch-type-C {
+  $switch-type: &;
+  --switch-base-color: rgb(120, 120, 120);
+  --switch-inactive-color: rgba(50, 50, 50, 0.5);
+  --switch-active-color: rgb(255, 189, 45);
+  --switch-button-top-color: #{$button-color};
+  --switch-button-accent-color: #{$button-accent-color};
+  --switch-width: 50px;
+  --switch-height: 50px;
+  --switch-light-thickness: 4px;
+  --switch-edge-thickness: 2px;
+  --time: 0.1s;
+  --text-label-scale-factor: 1;
+  display: inline-block;
+
+  &__graphic {
+    display: block;
+    position: relative;
+
+    background-color: var(--switch-inactive-color);
+    padding: var(--switch-light-thickness);
+
+    width: var(--switch-width);
+    height: var(--switch-height);
+    border: 2px solid var(--switch-base-color);
+    border-radius: calc(var(--switch-height));
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5) inset;
+
+    cursor: pointer;
+    transition: all var(--time) 0s;
+
+    &:hover:after {
+      background-color: var(--switch-button-accent-color);
+    }
+
+    &:after {
+      display: block;
+      content: '';
+      background-color: var(--switch-button-top-color);
+
+      width: var(--switch-width);
+      height: var(--switch-height);
+
+      border-radius: calc(var(--switch-height));
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
+    }
+
+    span {
+      display: block;
+      position: absolute;
+      width: calc(
+        100% - var(--switch-light-thickness) - 2 * var(--switch-edge-thickness)
+      );
+      text-align: center;
+      background-color: var(--switch-button-side-color);
+
+      color: var(--switch-base-color);
+      text-shadow: 0px 0px 1px var(--switch-base-color);
+      text-align: center;
+      font-size: calc(100% * var(--text-label-scale-factor));
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+
+      top: 50%;
+      transform: translateY(-50%);
+
+      transition: var(--time);
+      z-index: 3;
+    }
+  }
+  & input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+
+    &:checked ~ #{$switch-type}__graphic {
+      background-color: var(--switch-active-color);
+      box-shadow: 0 0 10px var(--switch-active-color);
+      span {
+        color: var(--switch-active-color);
+        text-shadow: 1px 1px 3px var(--switch-active-color);
+      }
+    }
+  }
+}
+/* end of switch 6 */
