@@ -49,3 +49,119 @@
     }
   }
 }
+
+/* --- Push to click on --- */
+#toggle-switch-type-BContainer {
+  --switchActiveColor: rgb(255, 189, 45);
+  --switchInactiveColor: rgba(50, 50, 50, 0.5);
+  --switchBaseColor: rgb(120, 120, 120);
+  --switchButtonTopColor: rgb(100, 102, 189);
+  --switchButtonSideColor: rgb(67, 44, 73);
+  --switchHeight: 2em;
+  --switchWidth: 2em;
+  --switchTravel: 0.5em;
+  --switchEdgeThickness: 0.1em;
+  --switchLightThickness: 0.2em;
+  --time: 0.1s;
+  --textLabelScaleFactor: 1;
+}
+.toggle-switch-type-BToggle span {
+  display: block;
+  position: relative;
+  background-color: var(--switchButtonSideColor);
+
+  color: transparent;
+  text-shadow: 0px 0px 1px var(--switchButtonSideColor);
+  text-align: center;
+  font-size: calc(100% * var(--textLabelScaleFactor));
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+
+  top: calc(
+    var(--switchHeight) / var(--textLabelScaleFactor) / 2 - var(--switchTravel) /
+      var(--textLabelScaleFactor)
+  );
+  transform: translateY(-50%);
+
+  transition: var(--time);
+  z-index: 3;
+}
+
+.toggle-switch-type-BToggle {
+  display: block;
+  position: relative;
+
+  width: var(--switchWidth);
+  height: var(--switchHeight);
+  padding: var(--switchLightThickness);
+  background-color: var(--switchInactiveColor);
+  border: solid var(--switchEdgeThickness) var(--switchBaseColor);
+  border-radius: var(--switchHeight);
+  transition: all var(--time) 0s;
+  cursor: pointer;
+}
+.toggle-switch-type-BToggle::before {
+  /*top face of button*/
+  display: block;
+  position: absolute;
+  content: '';
+  background-color: var(--switchButtonTopColor);
+  width: var(--switchWidth);
+  height: var(--switchHeight);
+  top: calc(
+    var(--switchHeight) + var(--switchLightThickness) - var(--switchTravel)
+  );
+  border-radius: calc(var(--switchHeight) / 2);
+  transform: translateY(-100%);
+  z-index: 2;
+  transition: var(--time);
+}
+.toggle-switch-type-BToggle::after {
+  /*front edge of button*/
+  display: block;
+  position: absolute;
+  content: '';
+  background-color: var(--switchButtonSideColor);
+  width: var(--switchWidth);
+  height: calc(var(--switchHeight) + var(--switchTravel));
+  top: calc(var(--switchHeight) + var(--switchLightThickness));
+  border-radius: calc(var(--switchHeight) / 2);
+  transform: translateY(-100%);
+
+  transition: var(--time);
+}
+
+/* set active state */
+.toggle-switch-type-BToggle:active::before {
+  top: calc(var(--switchHeight) + var(--switchLightThickness));
+  height: calc(var(--switchHeight) - 3px);
+}
+.toggle-switch-type-BToggle:active::after {
+  top: calc(var(--switchHeight) + var(--switchLightThickness));
+  height: var(--switchHeight);
+  background-color: rgb(85, 85, 85);
+}
+.toggle-switch-type-BToggle:active span,
+input:checked ~ .toggle-switch-type-BToggle:active span {
+  top: calc(var(--switchHeight) / var(--textLabelScaleFactor) / 2 + 3px);
+  transform: translateY(-50%);
+}
+
+/*set checked state*/
+input:checked ~ .toggle-switch-type-BToggle::after {
+  top: calc(var(--switchHeight) + var(--switchLightThickness));
+  height: var(--switchHeight);
+}
+input:checked ~ .toggle-switch-type-BToggle::before {
+  top: calc(var(--switchHeight) + var(--switchLightThickness));
+}
+input:checked ~ .toggle-switch-type-BToggle {
+  background-color: var(--switchActiveColor);
+  box-shadow: 0px 0px 10px var(--switchActiveColor);
+}
+input:checked ~ .toggle-switch-type-BToggle span {
+  top: calc(var(--switchHeight) / var(--textLabelScaleFactor) / 2);
+  transform: translateY(-50%);
+}
+/* End Switch 5  */
