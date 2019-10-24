@@ -29,33 +29,5 @@
       box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
       max-width: 1000px;
     }
-
-    .controls {
-      display: grid;
-      grid-gap: 1px;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      padding: 5px;
-
-      @media (min-width: $mobile-break) {
-        display: inline-flex;
-        vertical-align: top;
-        flex-flow: row wrap;
-        width: calc(#{$side-panel-width} - 10px);
-      }
-
-      &__module {
-        width: calc(100% - 10px);
-        height: 80px;
-        margin-top: -2px;
-        margin: 5px;
-        border-radius: 1px;
-        border: 2px solid lighten($sound-machine-color, 5);
-        color: white;
-
-        @media (min-width: $mobile-break) {
-          margin: 5px;
-        }
-      }
-    }
   }
 }
