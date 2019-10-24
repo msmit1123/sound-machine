@@ -1,48 +1,19 @@
 @import '../../_variables.scss';
 
-.button {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(50, 50, 50, 1);
-  color: white;
-  border-radius: 6px;
+.keypad__button {
+  margin: 5px;
+  padding: 10px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: $button-color;
   box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
-  transition: all 0.05s;
-  @media (min-width: $mobile-break) {
-    min-height: 10vh;
-  }
-
+  color: white;
+  cursor: pointer;
   &:hover {
-    background-color: rgba(60, 60, 60, 1);
+    background-color: darken($button-color, 10);
   }
-
-  &--digit {
-    background-color: rgba(75, 75, 75, 1);
-    &:hover {
-      background-color: rgba(85, 85, 85, 1);
-    }
-  }
-
-  &--clear {
-    background-color: rgba(90, 50, 50, 1);
-    &:hover {
-      background-color: rgba(100, 60, 60, 1);
-    }
-  }
-
-  &--equals {
-    background-color: rgba(50, 50, 70, 1);
-    grid-area: 5 / 4 / 7 / 5;
-    &:hover {
-      background-color: rgba(60, 60, 80, 1);
-    }
-  }
-
-  //active last to supercede
   &--active,
   &:active {
-    background-color: rgba(100, 150, 150, 1);
+    background-color: $active-color;
   }
 }
