@@ -40,14 +40,17 @@ function Controlpad(props) {
         </ToggleSwitch>
       </div>
       <div className='controls__module'>
-        <div>current time / max time</div>
+        <div className='controls__display'>
+          <span className='left'>current</span>{' '}
+          <span className='right'>/max</span>
+        </div>
         <Slider>
           {/** <input type="range" min="1" max="100" value="50" class="slider" id="myRange"> */}
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
       <div className='controls__module'>
-        <div>volume slider</div>
+        <div className='controls__display'>now playing</div>
         <Slider>
           <FontAwesomeIcon icon={faVolumeUp} />
         </Slider>
