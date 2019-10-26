@@ -1,5 +1,7 @@
 @import '../../_variables.scss';
 
+@import url(https://fonts.googleapis.com/css?family=VT323&display=swap);
+
 .controls {
   display: grid;
   grid-gap: 1px;
@@ -20,7 +22,6 @@
     margin: 5px;
     border-radius: 1px;
     border: 2px solid lighten($sound-machine-color, 5);
-    color: white;
 
     display: flex;
     flex-flow: row wrap;
@@ -29,6 +30,23 @@
 
     @media (min-width: $mobile-break) {
       margin: 5px;
+    }
+  }
+
+  &__display {
+    font-family: 'VT323', monospace;
+    font-weight: 100;
+    width: 100%;
+    margin: 10px;
+    padding: 5px 15px;
+    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.3) inset;
+    background-color: $button-inactive-color;
+    color: $display-indicator-color;
+    .left {
+      float: left;
+    }
+    .right {
+      float: right;
     }
   }
 }

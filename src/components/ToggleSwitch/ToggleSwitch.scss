@@ -57,7 +57,7 @@
 @mixin button-travel($travel) {
   $switch-type: &;
   --switch-active-color: #{$display-indicator-color};
-  --switch-inactive-color: rgba(50, 50, 50, 0.5);
+  --switch-inactive-color: #{$button-inactive-color};
   --switch-base-color: #{$accessory-color};
   --switch-button-top-color: #{$button-color};
   --switch-button-side-color: #{$button-accent-color};
