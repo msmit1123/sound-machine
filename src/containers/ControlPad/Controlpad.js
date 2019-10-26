@@ -2,14 +2,17 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlayCircle,
+  faPlay,
   faCog,
   faMicrophoneAlt,
-  faPowerOff
+  faPowerOff,
+  faVolumeUp
 } from '@fortawesome/free-solid-svg-icons';
 
 import './Controlpad.scss';
 
 import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch.js';
+import Slider from '../../components/Slider/Slider.js';
 
 function Controlpad(props) {
   return (
@@ -38,14 +41,19 @@ function Controlpad(props) {
       </div>
       <div className='controls__module'>
         <div>current time / max time</div>
-        <div>current time slider</div>
+        <Slider>
+          {/** <input type="range" min="1" max="100" value="50" class="slider" id="myRange"> */}
+          <FontAwesomeIcon icon={faPlay} />
+        </Slider>
       </div>
       <div className='controls__module'>
         <div>volume slider</div>
-        <div>now playing</div>
+        <Slider>
+          <FontAwesomeIcon icon={faVolumeUp} />
+        </Slider>
       </div>
       <div className='controls__module'>
-        <h3>Das Sound Machine</h3>
+        <h1>DAS SOUND MACHINE</h1>
       </div>
     </div>
   );
