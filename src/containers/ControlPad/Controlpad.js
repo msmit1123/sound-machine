@@ -15,22 +15,22 @@ function Controlpad(props) {
   return (
     <div className='controls'>
       <div className='controls__module'>
-        <ToggleSwitch id='play' className='toggle-switch-type-C'>
+        <ToggleSwitch id='play' className='controls__toggle-flat-button'>
           <span>
             <FontAwesomeIcon icon={faPlayCircle} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='record' className='toggle-switch-type-B'>
+        <ToggleSwitch id='record' className='controls__toggle-push-button'>
           <span>
             <FontAwesomeIcon icon={faMicrophoneAlt} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='settings' className='toggle-switch-type-B'>
+        <ToggleSwitch id='settings' className='controls__toggle-push-button'>
           <span>
             <FontAwesomeIcon icon={faCog} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='power' className='toggle-switch-type-B'>
+        <ToggleSwitch id='power' className='controls__toggle-push-button'>
           <span>
             <FontAwesomeIcon icon={faPowerOff} />
           </span>
