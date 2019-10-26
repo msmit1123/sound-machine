@@ -2,13 +2,18 @@
 * app-wide css variables here
 */
 
-$blank_color: #ffffff;
-$sound-machine-color: #495f41;
-$button-color: #253031;
-$background-color: #acb6a8;
-$active-color: #da4167;
-$display-text-color: #f7f8f7;
-//$slate-grey: #315659
+$blank_color: rgb(255, 255, 255);
+$background-color: rgb(172, 182, 168);
+
+$sound-machine-color: rgb(73, 95, 65);
+$button-color: rgb(37, 48, 49);
+$button-accent-color: darken($button-color, 10);
+$button-active-color: rgb(218, 65, 103);
+
+$display-text-color: rgb(247, 248, 247);
+$display-indicator-color: rgb(255, 189, 45);
+
+$accessory-color: rgb(120, 120, 120);
 
 $mobile-break: 768px;
 $side-panel-width: 300px;

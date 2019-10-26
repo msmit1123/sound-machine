@@ -1,25 +1,51 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faPlayCircle,
+  faCog,
+  faMicrophoneAlt,
+  faPowerOff
+} from '@fortawesome/free-solid-svg-icons';
 
 import './Controlpad.scss';
+
+import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch.js';
 
 function Controlpad(props) {
   return (
     <div className='controls'>
       <div className='controls__module'>
-        <div className='controls__toggle'>power</div>
-        <div className='controls__toggle'>settings</div>
+        <ToggleSwitch id='play' className='controls__toggle-flat-button'>
+          <span>
+            <FontAwesomeIcon icon={faPlayCircle} />
+          </span>
+        </ToggleSwitch>
+        <ToggleSwitch id='record' className='controls__toggle-push-button'>
+          <span>
+            <FontAwesomeIcon icon={faMicrophoneAlt} />
+          </span>
+        </ToggleSwitch>
+        <ToggleSwitch id='settings' className='controls__toggle-push-button'>
+          <span>
+            <FontAwesomeIcon icon={faCog} />
+          </span>
+        </ToggleSwitch>
+        <ToggleSwitch id='power' className='controls__toggle-push-button'>
+          <span>
+            <FontAwesomeIcon icon={faPowerOff} />
+          </span>
+        </ToggleSwitch>
       </div>
       <div className='controls__module'>
         <div>current time / max time</div>
         <div>current time slider</div>
       </div>
       <div className='controls__module'>
-        <div className='controls__toggle'>record</div>
-        <div className='controls__toggle'>play</div>
-      </div>
-      <div className='controls__module'>
         <div>volume slider</div>
         <div>now playing</div>
+      </div>
+      <div className='controls__module'>
+        <h3>Das Sound Machine</h3>
       </div>
     </div>
   );

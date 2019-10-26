@@ -1,9 +1,11 @@
+@import '../../variables';
+
 .toggle-switch-type-A {
   $toggle-type: &;
   display: inline-block;
   --switchSize: 1em;
   --switchWidthFactor: 2;
-  --switchEdgeThickness: 0.1em;
+  --switch-edge-thickness: 0.1em;
   transform: translateY(0.3em);
 
   & input {
@@ -18,7 +20,7 @@
     }
     &:checked ~ #{$toggle-type}__graphic {
       background-color: rgba(255, 0, 0, 0);
-      border: solid var(--switchEdgeThickness) white;
+      border: solid var(--switch-edge-thickness) white;
     }
   }
 
@@ -26,9 +28,11 @@
     display: inline-block;
     width: calc(var(--switchSize) * var(--switchWidthFactor));
     height: var(--switchSize);
-    border-radius: calc(var(--switchSize) / 2 + var(--switchEdgeThickness) * 2);
-    border: solid var(--switchEdgeThickness) white;
-    padding: var(--switchEdgeThickness);
+    border-radius: calc(
+      var(--switchSize) / 2 + var(--switch-edge-thickness) * 2
+    );
+    border: solid var(--switch-edge-thickness) white;
+    padding: var(--switch-edge-thickness);
     transition: all 0.1s 0.05s;
     cursor: pointer;
 
@@ -47,5 +51,145 @@
     &:active::after {
       width: calc(var(--switchSize) * 1.5);
     }
+  }
+}
+
+@mixin button-travel($travel) {
+  $switch-type: &;
+  --switch-active-color: #{$display-indicator-color};
+  --switch-inactive-color: rgba(50, 50, 50, 0.5);
+  --switch-base-color: #{$accessory-color};
+  --switch-button-top-color: #{$button-color};
+  --switch-button-side-color: #{$button-accent-color};
+  --switch-height: 50px;
+  --switch-width: 50px;
+  --switch-travel: #{$travel};
+  --switch-edge-thickness: 2px;
+  --switch-light-thickness: 4px;
+  --time: 0.1s;
+  --text-label-scale-factor: 1;
+  display: inline-block;
+
+  &__graphic {
+    display: block;
+    position: relative;
+
+    width: var(--switch-width);
+    height: var(--switch-height);
+    padding: var(--switch-light-thickness);
+    background-color: var(--switch-inactive-color);
+    border: solid var(--switch-edge-thickness) var(--switch-base-color);
+    border-radius: var(--switch-height);
+    transition: all var(--time) 0s;
+    cursor: pointer;
+
+    &::before {
+      /*top face of button*/
+      display: block;
+      position: absolute;
+      content: '';
+      background-color: var(--switch-button-top-color);
+      width: var(--switch-width);
+      height: var(--switch-height);
+      top: calc(
+        var(--switch-height) + var(--switch-light-thickness) -
+          var(--switch-travel)
+      );
+      border-radius: calc(var(--switch-height) / 2);
+      transform: translateY(-100%);
+      z-index: 2;
+      transition: var(--time);
+    }
+
+    &::after {
+      /*front edge of button*/
+      display: block;
+      position: absolute;
+      content: '';
+      background-color: var(--switch-button-side-color);
+      width: var(--switch-width);
+      height: calc(var(--switch-height) + var(--switch-travel));
+      top: calc(var(--switch-height) + var(--switch-light-thickness));
+      border-radius: calc(var(--switch-height) / 2);
+      transform: translateY(-100%);
+
+      transition: var(--time);
+    }
+
+    &:active {
+      &:before {
+        top: calc(var(--switch-height) + var(--switch-light-thickness));
+        height: calc(var(--switch-height) - 3px);
+      }
+      &:after {
+        top: calc(var(--switch-height) + var(--switch-light-thickness));
+        height: var(--switch-height);
+      }
+      span {
+        top: calc(
+          var(--switch-height) / var(--text-label-scale-factor) / 2 + 3px
+        );
+        transform: translateY(-50%);
+      }
+    }
+
+    span {
+      display: block;
+      position: relative;
+      background-color: var(--switch-button-side-color);
+
+      color: var(--switch-base-color);
+      text-shadow: 0px 0px 1px var(--switch-base-color);
+      text-align: center;
+      font-size: calc(100% * var(--text-label-scale-factor));
+      -webkit-background-clip: text;
+      -moz-background-clip: text;
+      background-clip: text;
+
+      top: calc(
+        var(--switch-height) / var(--text-label-scale-factor) / 2 -
+          var(--switch-travel) / var(--text-label-scale-factor)
+      );
+      transform: translateY(-50%);
+
+      transition: var(--time);
+      z-index: 3;
+    }
+  }
+
+  & input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+
+    &:checked {
+      & ~ #{$switch-type}__graphic {
+        background-color: var(--switch-active-color);
+        box-shadow: 0px 0px 10px var(--switch-active-color);
+        &::before {
+          top: calc(var(--switch-height) + var(--switch-light-thickness));
+        }
+        &::after {
+          top: calc(var(--switch-height) + var(--switch-light-thickness));
+          height: var(--switch-height);
+        }
+
+        span {
+          top: calc(var(--switch-height) / var(--text-label-scale-factor) / 2);
+          transform: translateY(-50%);
+          color: var(--switch-active-color);
+          text-shadow: 1px 1px 3px var(--switch-active-color);
+        }
+      }
+    }
+  }
+}
+
+.controls__toggle {
+  &-push-button {
+    @include button-travel('10px');
+  }
+  &-flat-button {
+    @include button-travel('0px');
   }
 }
