@@ -54,32 +54,6 @@ function KeypadColumn(props) {
       ))}
     </div>
   );
-
-  // return (
-  //   <div className='keypad__column'>
-
-  //     <Button className='keypad__button' id='a' onClick={handleButtons}>
-  //       <audio
-  //         // className='clip'
-  //         src='https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
-  //       ></audio>
-  //     </Button>
-  //     <Button className='keypad__button' onClick={handleButtons}>
-  //       <audio
-  //         className='clip'
-  //         id='a'
-  //         src='https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
-  //       ></audio>
-  //     </Button>
-  //     <Button className='keypad__button' onClick={handleButtons}>
-  //       <audio
-  //         className='clip'
-  //         id='a'
-  //         src='https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
-  //       ></audio>
-  //     </Button>
-  //   </div>
-  // );
 }
 
 export default KeypadColumn;
