@@ -7,9 +7,9 @@ import KeypadColumn from '../KeypadColumn/KeypadColumn.js';
 function Keypad(props) {
   return (
     <div className='keypad'>
-      <KeypadColumn />
-      <KeypadColumn />
-      <KeypadColumn />
+      {props.columnArray.map((item, index) => (
+        <KeypadColumn key={'column-' + index} buttonArray={item} />
+      ))}
     </div>
   );
 }

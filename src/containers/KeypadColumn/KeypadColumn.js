@@ -4,33 +4,6 @@ import './KeypadColumn.scss';
 
 import Button from '../../components/Button/Button.js';
 
-const colArr = [
-  {
-    pressKey: '1',
-    title: 'chord 1',
-    id: '',
-    url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
-  },
-  {
-    pressKey: 'q',
-    title: 'chord 2',
-    id: '',
-    url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
-  },
-  {
-    pressKey: 'a',
-    title: 'chord 3',
-    id: '',
-    url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
-  },
-  {
-    pressKey: 'z',
-    title: 'chord 1',
-    id: '',
-    url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
-  }
-];
-
 function KeypadColumn(props) {
   function handleButtons(event) {
     const target = event.target;
@@ -41,7 +14,7 @@ function KeypadColumn(props) {
 
   return (
     <div className='keypad__column'>
-      {colArr.map((item, index) => (
+      {props.buttonArray.map((item, index) => (
         <Button
           className='keypad__button'
           id={item.pressKey}
