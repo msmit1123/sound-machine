@@ -5,7 +5,7 @@ import './App.scss';
 import Keypad from './containers/Keypad/Keypad.js';
 import Controlpad from './containers/ControlPad/Controlpad.js';
 
-const keyPresentlyHeld = { w: true };
+const keyPresentlyHeld = {};
 
 class App extends React.Component {
   constructor(props) {

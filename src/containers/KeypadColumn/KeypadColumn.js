@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 
 import './KeypadColumn.scss';
 
@@ -10,7 +11,7 @@ function KeypadColumn(props) {
       {props.buttonArray.map((item, index) => (
         <Button
           className='keypad__button'
-          key={'key-' + item.pressKey}
+          key={'key-' + item.pressKey + '-' + index}
           id={item.pressKey}
           title={item.title}
           onClick={props.playSound}
@@ -22,5 +23,10 @@ function KeypadColumn(props) {
     </div>
   );
 }
+
+KeypadColumn.propTypes = {
+  buttonArray: PropTypes.array,
+  playSound: PropTypes.func
+};
 
 export default KeypadColumn;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlayCircle,
@@ -64,7 +65,13 @@ function Controlpad(props) {
           <span className='left'>current</span>{' '}
           <span className='right'>/max</span>
         </div>
-        <Slider>
+        <Slider
+          id='volume-slider'
+          min={0}
+          max={1}
+          value={50}
+          onChange={console.log('a')}
+        >
           {/** <input type="range" min="1" max="100" value="50" class="slider" id="myRange"> */}
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
@@ -81,5 +88,17 @@ function Controlpad(props) {
     </div>
   );
 }
+
+Controlpad.propTypes = {
+  isPlaying: PropTypes.bool,
+  isRecording: PropTypes.bool,
+  isSettingsMode: PropTypes.bool,
+  isOn: PropTypes.bool,
+  togglePlay: PropTypes.func,
+  toggleRecord: PropTypes.func,
+  toggleSettings: PropTypes.func,
+  togglePower: PropTypes.func,
+  display: PropTypes.string
+};
 
 export default Controlpad;

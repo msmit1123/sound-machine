@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 
 import './Keypad.scss';
 
@@ -13,5 +14,10 @@ function Keypad({ columnArray, ...props }) {
     </div>
   );
 }
+
+Keypad.propTypes = {
+  columnArray: PropTypes.array,
+  playSound: PropTypes.func
+};
 
 export default Keypad;
