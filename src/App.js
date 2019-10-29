@@ -6,6 +6,8 @@ import Keypad from './containers/Keypad/Keypad.js';
 import Controlpad from './containers/ControlPad/Controlpad.js';
 import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
+import { deepCopy } from './helperFunctions.js';
+
 const keyPresentlyHeld = {};
 
 class App extends React.Component {
@@ -83,6 +85,7 @@ class App extends React.Component {
 
     this.addButton = this.addButton.bind(this);
     this.editButton = this.editButton.bind(this);
+    this.updateButton = this.updateButton.bind(this);
     this.closeEditButtonOverlay = this.closeEditButtonOverlay.bind(this);
   }
 
@@ -172,9 +175,8 @@ class App extends React.Component {
   addButton(event) {
     const target = event.target; //div that was clicked
     let colIndex = target.parentNode.getAttribute('column-index'); //column that was clicked
-    const soundLibraryCopy = JSON.parse(
-      JSON.stringify(this.state.soundLibrary)
-    );
+    const soundLibraryCopy = deepCopy(this.state.soundLibrary);
+
     if (colIndex === 'addNewColumn') {
       soundLibraryCopy.push([]); //add new blank colulmn
       colIndex = soundLibraryCopy.length - 1; //set index to the new column
@@ -190,18 +192,31 @@ class App extends React.Component {
     const target = event.target; //get div that was clicked
     const col = target.parentNode.getAttribute('column-index'); //get its column number
     const row = target.getAttribute('row-index'); //get its row number
-    console.log(col, row);
     this.setState({
       isFormOpen: true,
       nowEditingButton: { col: col, row: row } //use X/Y Location because IDs may not be set up yet
     });
   }
 
+  updateButton(formState) {
+    console.log(formState);
+    let soundLibraryCopy = deepCopy(this.state.soundLibrary);
+    soundLibraryCopy[this.state.nowEditingButton.col][
+      this.state.nowEditingButton.row
+    ] = formState;
+    this.setState({ soundLibrary: soundLibraryCopy });
+
+    this.closeEditButtonOverlay();
+  }
+
   closeEditButtonOverlay(event) {
-    if (event.target !== event.currentTarget) {
-      return;
+    if (event === undefined || event.target === event.currentTarget) {
+      this.setState({
+        isFormOpen: false,
+        nowEditingButton: { col: null, row: null }
+      });
     } else {
-      this.setState({ isFormOpen: false });
+      return;
     }
   }
 
@@ -265,6 +280,7 @@ class App extends React.Component {
             <FormOverlay
               closeEditButtonOverlay={this.closeEditButtonOverlay}
               nowEditingButton={this.state.nowEditingButton}
+              updateButton={this.updateButton}
               //pass in information about the currently being edited clip
               clipData={
                 this.state.soundLibrary[this.state.nowEditingButton.col][
