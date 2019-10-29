@@ -50,7 +50,7 @@ function Controlpad(props) {
         </Slider>
       </div>
       <div className='controls__module'>
-        <div className='controls__display'>now playing</div>
+        <div className='controls__display'>{props.display}</div>
         <Slider>
           <FontAwesomeIcon icon={faVolumeUp} />
         </Slider>

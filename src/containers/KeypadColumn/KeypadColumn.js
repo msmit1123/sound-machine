@@ -5,21 +5,15 @@ import './KeypadColumn.scss';
 import Button from '../../components/Button/Button.js';
 
 function KeypadColumn(props) {
-  function handleButtons(event) {
-    const target = event.target;
-    const sound = target.getElementsByTagName('audio')[0];
-    sound.currentTime = 0;
-    sound.play();
-  }
-
   return (
     <div className='keypad__column'>
       {props.buttonArray.map((item, index) => (
         <Button
           className='keypad__button'
+          key={'key-' + item.pressKey}
           id={item.pressKey}
-          key={item.pressKey}
-          onClick={handleButtons}
+          title={item.title}
+          onClick={props.playSound}
         >
           <audio src={item.url} />
           {item.pressKey}

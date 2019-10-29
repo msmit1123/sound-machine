@@ -4,11 +4,11 @@ import './Keypad.scss';
 
 import KeypadColumn from '../KeypadColumn/KeypadColumn.js';
 
-function Keypad(props) {
+function Keypad({ columnArray, ...props }) {
   return (
     <div className='keypad'>
-      {props.columnArray.map((item, index) => (
-        <KeypadColumn key={'column-' + index} buttonArray={item} />
+      {columnArray.map((item, index) => (
+        <KeypadColumn key={'column-' + index} buttonArray={item} {...props} />
       ))}
     </div>
   );

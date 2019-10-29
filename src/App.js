@@ -5,12 +5,15 @@ import './App.scss';
 import Keypad from './containers/Keypad/Keypad.js';
 import Controlpad from './containers/ControlPad/Controlpad.js';
 
+const keyPresentlyHeld = { w: true };
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isOn: true,
       isSettingsMode: false,
+      display: 'welcome',
       soundLibrary: [
         [
           {
@@ -33,7 +36,7 @@ class App extends React.Component {
           },
           {
             pressKey: 'z',
-            title: 'chord 1',
+            title: 'closed HH',
             id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
           }
@@ -66,15 +69,63 @@ class App extends React.Component {
         ]
       ]
     };
+
+    this.playSound = this.playSound.bind(this);
   }
+
+  componentDidMount() {
+    //add event listener for keyboard presses on mount
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener('keyup', this.handleKeyUp);
+  }
+  componentWillUnmount() {
+    //remove on unmount
+    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  playSound(event) {
+    const target = event.target;
+    const sound = target.getElementsByTagName('audio')[0];
+    sound.currentTime = 0;
+    sound.play();
+
+    this.setState({ display: target.title });
+  }
+
+  handleKeyDown(event) {
+    const key = document.getElementById(event.key);
+    if (keyPresentlyHeld[event.key]) {
+      return;
+    }
+
+    if (key !== null) {
+      key.click();
+      key.classList.add('keypad__button--active'); //make the button active
+    }
+
+    keyPresentlyHeld[event.key] = true;
+  }
+
+  handleKeyUp(event) {
+    const key = document.getElementById(event.key);
+    if (key !== null) {
+      key.classList.remove('keypad__button--active'); //make the button active
+    }
+    keyPresentlyHeld[event.key] = false;
+  }
+
   render() {
     return (
       <div className='App'>
         {/* Power: {this.state.isOn ? 'on' : 'off'} <br />
         Settings Mode: {this.state.isSettingsMode ? 'settings' : 'play'} */}
         <div className='sound-machine'>
-          <Keypad columnArray={this.state.soundLibrary} />
-          <Controlpad />
+          <Keypad
+            columnArray={this.state.soundLibrary}
+            playSound={this.playSound}
+          />
+          <Controlpad display={this.state.display} />
         </div>
       </div>
     );
