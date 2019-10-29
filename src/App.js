@@ -16,6 +16,7 @@ class App extends React.Component {
       isRecording: false,
       isSettingsMode: false,
       display: 'welcome',
+      currentVolume: 80,
       soundLibrary: [
         [
           {
@@ -77,6 +78,8 @@ class App extends React.Component {
     this.handleKeyUp = this.handleKeyUp.bind(this);
 
     this.pauseAllAudio = this.pauseAllAudio.bind(this);
+    this.changeVolume = this.changeVolume.bind(this);
+
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
     this.toggleSettings = this.toggleSettings.bind(this);
@@ -146,10 +149,18 @@ class App extends React.Component {
     }
   }
 
+  changeVolume(event) {
+    if (this.state.isOn) {
+      const volume = event.target.value;
+      this.setState({ currentVolume: volume, display: 'volume: ' + volume });
+    }
+  }
+
   playSound(event) {
     const target = event.target;
     const sound = target.getElementsByTagName('audio')[0];
     sound.currentTime = 0;
+    sound.volume = this.state.currentVolume / 100;
     if (this.state.isOn) {
       sound.play();
       this.setState({ display: target.title });
@@ -192,14 +203,21 @@ class App extends React.Component {
           />
           <Controlpad
             isPlaying={this.state.isPlaying}
-            isRecording={this.state.isRecording}
-            isSettingsMode={this.state.isSettingsMode}
-            isOn={this.state.isOn}
             togglePlay={this.togglePlay}
+            //
+            isRecording={this.state.isRecording}
             toggleRecord={this.toggleRecord}
+            //
+            isSettingsMode={this.state.isSettingsMode}
             toggleSettings={this.toggleSettings}
+            //
+            isOn={this.state.isOn}
             togglePower={this.togglePower}
+            //
             display={this.state.display}
+            //
+            currentVolume={this.state.currentVolume}
+            changeVolume={this.changeVolume}
           />
         </div>
       </div>

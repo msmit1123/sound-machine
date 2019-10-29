@@ -65,20 +65,19 @@ function Controlpad(props) {
           <span className='left'>current</span>{' '}
           <span className='right'>/max</span>
         </div>
-        <Slider
-          id='volume-slider'
-          min={0}
-          max={1}
-          value={50}
-          onChange={console.log('a')}
-        >
-          {/** <input type="range" min="1" max="100" value="50" class="slider" id="myRange"> */}
+        <Slider>
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
       <div className='controls__module'>
         <div className='controls__display'>{props.display}</div>
-        <Slider>
+        <Slider
+          id='volume-slider'
+          min={0}
+          max={100}
+          value={props.currentVolume}
+          onChange={props.changeVolume}
+        >
           <FontAwesomeIcon icon={faVolumeUp} />
         </Slider>
       </div>
@@ -91,14 +90,21 @@ function Controlpad(props) {
 
 Controlpad.propTypes = {
   isPlaying: PropTypes.bool,
-  isRecording: PropTypes.bool,
-  isSettingsMode: PropTypes.bool,
-  isOn: PropTypes.bool,
   togglePlay: PropTypes.func,
+  //
+  isRecording: PropTypes.bool,
   toggleRecord: PropTypes.func,
+  //
+  isSettingsMode: PropTypes.bool,
   toggleSettings: PropTypes.func,
+  //
+  isOn: PropTypes.bool,
   togglePower: PropTypes.func,
-  display: PropTypes.string
+  //
+  display: PropTypes.string,
+  //
+  currentVolume: PropTypes.number,
+  changeVolume: PropTypes.func
 };
 
 export default Controlpad;
