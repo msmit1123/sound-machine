@@ -90,6 +90,8 @@ class App extends React.Component {
     //add event listener for keyboard presses on mount
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
+    document.addEventListener('mousedown', this.handleMouseDown);
+    document.addEventListener('mouseup', this.handleMouseUp);
   }
   componentWillUnmount() {
     //remove on unmount

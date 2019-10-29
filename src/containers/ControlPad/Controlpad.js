@@ -103,7 +103,7 @@ Controlpad.propTypes = {
   //
   display: PropTypes.string,
   //
-  currentVolume: PropTypes.number,
+  currentVolume: PropTypes.oneOf(PropTypes.number, PropTypes.string),
   changeVolume: PropTypes.func
 };
 

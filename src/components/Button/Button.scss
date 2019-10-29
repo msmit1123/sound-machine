@@ -21,7 +21,8 @@
   }
 
   &:active,
-  &--active {
+  &--active,
+  &--active:hover {
     background-color: $button-active-color;
   }
 }
