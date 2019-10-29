@@ -27,21 +27,25 @@ class App extends React.Component {
           {
             pressKey: '1',
             title: 'chord 1',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
           },
           {
             pressKey: 'q',
             title: 'chord 2',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
           },
           {
             pressKey: 'a',
             title: 'chord 3',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
           },
           {
             pressKey: 'z',
             title: 'closed HH',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
           }
         ],
@@ -49,21 +53,25 @@ class App extends React.Component {
           {
             pressKey: '2',
             title: 'open HH',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
           },
           {
             pressKey: 'w',
             title: 'punchy kick',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
           },
           {
             pressKey: 's',
             title: 'side stick',
+            volume: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
           },
           {
             pressKey: 'x',
             title: 'snare',
+            volume: 100,
             url:
               'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
           }
@@ -164,8 +172,10 @@ class App extends React.Component {
   playSound(event) {
     const target = event.target;
     const sound = target.getElementsByTagName('audio')[0];
+    const globalVolume = this.state.currentVolume / 100;
+    const clipVolume = target.getAttribute('clipVolume') / 100;
     sound.currentTime = 0;
-    sound.volume = this.state.currentVolume / 100;
+    sound.volume = globalVolume * clipVolume;
     if (this.state.isOn) {
       sound.play();
       this.setState({ display: target.title });
@@ -196,10 +206,10 @@ class App extends React.Component {
       isFormOpen: true,
       nowEditingButton: { col: col, row: row } //use X/Y Location because IDs may not be set up yet
     });
+    this.forceUpdate();
   }
 
   updateButton(formState) {
-    console.log(formState);
     let soundLibraryCopy = deepCopy(this.state.soundLibrary);
     soundLibraryCopy[this.state.nowEditingButton.col][
       this.state.nowEditingButton.row

@@ -21,6 +21,7 @@ function KeypadColumn(props) {
             id={item.pressKey}
             title={item.title}
             onClick={props.playSound}
+            clipVolume={item.volume}
           >
             <audio src={item.url} />
             {item.pressKey}
