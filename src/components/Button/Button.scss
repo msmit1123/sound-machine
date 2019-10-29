@@ -7,15 +7,22 @@
   border-radius: 5px;
   background-color: $button-color;
   box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
-  color: white;
+  color: $accessory-color;
+  font-size: 12px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+
   cursor: pointer;
 
   &:hover {
     background-color: $button-accent-color;
   }
 
+  &:active,
   &--active,
-  &:active {
+  &--active:hover {
     background-color: $button-active-color;
   }
 }

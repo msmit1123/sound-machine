@@ -15,9 +15,12 @@ function Slider({ children, ...props }) {
 }
 
 Slider.propTypes = {
-  label: PropTypes.node,
-  children: PropTypes.node,
-  onClick: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  min: PropTypes.number.isRequired,
+  max: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
+  children: PropTypes.node
 };
 
 export default Slider;
