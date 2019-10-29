@@ -12,6 +12,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       isOn: true,
+      isPlaying: false,
+      isRecording: false,
       isSettingsMode: false,
       display: 'welcome',
       soundLibrary: [
@@ -71,6 +73,14 @@ class App extends React.Component {
     };
 
     this.playSound = this.playSound.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
+
+    this.pauseAllAudio = this.pauseAllAudio.bind(this);
+    this.togglePlay = this.togglePlay.bind(this);
+    this.toggleRecord = this.toggleRecord.bind(this);
+    this.toggleSettings = this.toggleSettings.bind(this);
+    this.togglePower = this.togglePower.bind(this);
   }
 
   componentDidMount() {
@@ -84,24 +94,79 @@ class App extends React.Component {
     document.removeEventListener('keyup', this.handleKeyUp);
   }
 
+  togglePlay() {
+    if (this.state.isOn) {
+      this.setState((prevState) => ({ isPlaying: !prevState.isPlaying }));
+    }
+  }
+  toggleRecord() {
+    if (this.state.isOn) {
+      if (!this.state.isRecording) {
+        this.setState({ isPlaying: true, isRecording: true });
+      } else {
+        this.setState({ isRecording: false });
+      }
+    }
+  }
+  toggleSettings() {
+    if (this.state.isOn) {
+      this.setState((prevState) => ({
+        isSettingsMode: !prevState.isSettingsMode
+      }));
+    }
+  }
+  togglePower() {
+    if (this.state.isOn) {
+      this.setState({
+        isOn: false,
+        isPlaying: false,
+        isRecording: false,
+        isSettingsMode: false,
+        display: ''
+      });
+      this.pauseAllAudio();
+      this.unlightAllPadButtons();
+    }
+    if (!this.state.isOn) {
+      this.setState({ isOn: true });
+    }
+  }
+
+  pauseAllAudio() {
+    const sounds = document.getElementsByTagName('audio');
+    for (let i = 0; i < sounds.length; i++) {
+      sounds[i].pause();
+      sounds[i].currentTime = 0;
+    }
+  }
+  unlightAllPadButtons() {
+    const buttons = document.getElementsByClassName('keypad__button');
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('keypad__button--active');
+    }
+  }
+
   playSound(event) {
     const target = event.target;
     const sound = target.getElementsByTagName('audio')[0];
     sound.currentTime = 0;
-    sound.play();
-
-    this.setState({ display: target.title });
+    if (this.state.isOn) {
+      sound.play();
+      this.setState({ display: target.title });
+    }
   }
 
   handleKeyDown(event) {
-    const key = document.getElementById(event.key);
-    if (keyPresentlyHeld[event.key]) {
-      return;
-    }
+    if (this.state.isOn) {
+      const key = document.getElementById(event.key);
+      if (keyPresentlyHeld[event.key]) {
+        return;
+      }
 
-    if (key !== null) {
-      key.click();
-      key.classList.add('keypad__button--active'); //make the button active
+      if (key !== null) {
+        key.click();
+        key.classList.add('keypad__button--active'); //make the button active
+      }
     }
 
     keyPresentlyHeld[event.key] = true;
@@ -125,7 +190,17 @@ class App extends React.Component {
             columnArray={this.state.soundLibrary}
             playSound={this.playSound}
           />
-          <Controlpad display={this.state.display} />
+          <Controlpad
+            isPlaying={this.state.isPlaying}
+            isRecording={this.state.isRecording}
+            isSettingsMode={this.state.isSettingsMode}
+            isOn={this.state.isOn}
+            togglePlay={this.togglePlay}
+            toggleRecord={this.toggleRecord}
+            toggleSettings={this.toggleSettings}
+            togglePower={this.togglePower}
+            display={this.state.display}
+          />
         </div>
       </div>
     );

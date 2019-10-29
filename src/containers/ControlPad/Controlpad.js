@@ -18,22 +18,42 @@ function Controlpad(props) {
   return (
     <div className='controls'>
       <div className='controls__module'>
-        <ToggleSwitch id='play' className='controls__toggle-flat-button'>
+        <ToggleSwitch
+          id='play'
+          className='controls__toggle-flat-button'
+          checked={props.isPlaying}
+          onChange={props.togglePlay}
+        >
           <span>
             <FontAwesomeIcon icon={faPlayCircle} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='record' className='controls__toggle-push-button'>
+        <ToggleSwitch
+          id='record'
+          className='controls__toggle-push-button'
+          checked={props.isRecording}
+          onChange={props.toggleRecord}
+        >
           <span>
             <FontAwesomeIcon icon={faMicrophoneAlt} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='settings' className='controls__toggle-push-button'>
+        <ToggleSwitch
+          id='settings'
+          className='controls__toggle-push-button'
+          checked={props.isSettingsMode}
+          onChange={props.toggleSettings}
+        >
           <span>
             <FontAwesomeIcon icon={faCog} />
           </span>
         </ToggleSwitch>
-        <ToggleSwitch id='power' className='controls__toggle-push-button'>
+        <ToggleSwitch
+          id='power'
+          className='controls__toggle-push-button'
+          checked={props.isOn}
+          onChange={props.togglePower}
+        >
           <span>
             <FontAwesomeIcon icon={faPowerOff} />
           </span>

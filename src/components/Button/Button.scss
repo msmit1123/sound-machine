@@ -20,8 +20,8 @@
     background-color: $button-accent-color;
   }
 
-  &--active,
-  &:active {
+  &:active,
+  &--active {
     background-color: $button-active-color;
   }
 }
