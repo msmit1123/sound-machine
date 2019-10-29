@@ -26,7 +26,8 @@ function KeypadColumn(props) {
             {item.pressKey}
           </Button>
         ))}
-      {/* when in settings mode, render an extra "add" button */}
+
+      {/* when in settings mode, show setting icons on buttons */}
       {props.isSettingsMode &&
         props.buttonArray.map((item, index) => (
           <Button
@@ -39,6 +40,7 @@ function KeypadColumn(props) {
             {item.pressKey}
           </Button>
         ))}
+      {/* and render an extra 'add' button */}
       {props.isSettingsMode && props.buttonArray.length < MAX_BUTTON_ROWS && (
         <Button
           className='keypad__button keypad__button--add'
@@ -57,7 +59,8 @@ KeypadColumn.propTypes = {
   buttonArray: PropTypes.array,
   playSound: PropTypes.func,
   editButton: PropTypes.func,
-  addButton: PropTypes.func
+  addButton: PropTypes.func,
+  closeEditButtonOverlay: PropTypes.func
 };
 
 export default KeypadColumn;

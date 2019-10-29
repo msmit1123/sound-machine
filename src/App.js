@@ -4,6 +4,7 @@ import './App.scss';
 
 import Keypad from './containers/Keypad/Keypad.js';
 import Controlpad from './containers/ControlPad/Controlpad.js';
+import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
 const keyPresentlyHeld = {};
 
@@ -15,6 +16,7 @@ class App extends React.Component {
       isPlaying: false,
       isRecording: false,
       isSettingsMode: false,
+      isFormOpen: false,
       display: 'welcome',
       currentVolume: 80,
       soundLibrary: [
@@ -22,25 +24,21 @@ class App extends React.Component {
           {
             pressKey: '1',
             title: 'chord 1',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
           },
           {
             pressKey: 'q',
             title: 'chord 2',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
           },
           {
             pressKey: 'a',
             title: 'chord 3',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
           },
           {
             pressKey: 'z',
             title: 'closed HH',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
           }
         ],
@@ -48,25 +46,21 @@ class App extends React.Component {
           {
             pressKey: '2',
             title: 'open HH',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
           },
           {
             pressKey: 'w',
             title: 'punchy kick',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
           },
           {
             pressKey: 's',
             title: 'side stick',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
           },
           {
             pressKey: 'x',
             title: 'snare',
-            id: '',
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3'
           }
         ]
@@ -86,6 +80,8 @@ class App extends React.Component {
     this.togglePower = this.togglePower.bind(this);
 
     this.addButton = this.addButton.bind(this);
+    this.editButton = this.editButton.bind(this);
+    this.closeEditButtonOverlay = this.closeEditButtonOverlay.bind(this);
   }
 
   componentDidMount() {
@@ -188,6 +184,14 @@ class App extends React.Component {
     });
   }
 
+  editButton(event) {
+    this.setState({ isFormOpen: true });
+  }
+
+  closeEditButtonOverlay() {
+    this.setState({ isFormOpen: false });
+  }
+
   handleKeyDown(event) {
     if (this.state.isOn) {
       const key = document.getElementById(event.key);
@@ -221,6 +225,8 @@ class App extends React.Component {
           <Keypad
             columnArray={this.state.soundLibrary}
             playSound={this.playSound}
+            editButton={this.editButton}
+            closeEditButtonOverlay={this.closeEditButtonOverlay}
             isSettingsMode={this.state.isSettingsMode}
             addButton={this.addButton}
           />
@@ -242,6 +248,12 @@ class App extends React.Component {
             currentVolume={this.state.currentVolume}
             changeVolume={this.changeVolume}
           />
+          {/* show form overlay if a button is open for editing */}
+          {this.state.isFormOpen && (
+            <FormOverlay
+              closeEditButtonOverlay={this.closeEditButtonOverlay}
+            ></FormOverlay>
+          )}
         </div>
       </div>
     );

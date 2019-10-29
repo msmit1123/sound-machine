@@ -38,7 +38,8 @@ Keypad.propTypes = {
   isSettingsMode: PropTypes.bool,
   playSound: PropTypes.func,
   editButton: PropTypes.func,
-  addButton: PropTypes.func
+  addButton: PropTypes.func,
+  closeEditButtonOverlay: PropTypes.func
 };
 
 export default Keypad;
