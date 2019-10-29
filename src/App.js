@@ -84,6 +84,8 @@ class App extends React.Component {
     this.toggleRecord = this.toggleRecord.bind(this);
     this.toggleSettings = this.toggleSettings.bind(this);
     this.togglePower = this.togglePower.bind(this);
+
+    this.addButton = this.addButton.bind(this);
   }
 
   componentDidMount() {
@@ -169,6 +171,21 @@ class App extends React.Component {
     }
   }
 
+  addButton(event) {
+    const target = event.target; //div that was clicked
+    const colIndex = target.parentNode.getAttribute('columnIndex'); //column that was clicked
+
+    const soundLibraryCopy = JSON.parse(
+      JSON.stringify(this.state.soundLibrary)
+    );
+
+    soundLibraryCopy[colIndex].push({});
+
+    this.setState({
+      soundLibrary: soundLibraryCopy
+    });
+  }
+
   handleKeyDown(event) {
     if (this.state.isOn) {
       const key = document.getElementById(event.key);
@@ -203,6 +220,7 @@ class App extends React.Component {
             columnArray={this.state.soundLibrary}
             playSound={this.playSound}
             isSettingsMode={this.state.isSettingsMode}
+            addButton={this.addButton}
           />
           <Controlpad
             isPlaying={this.state.isPlaying}

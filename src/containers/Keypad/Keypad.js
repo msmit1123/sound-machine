@@ -9,7 +9,12 @@ function Keypad({ columnArray, ...props }) {
   return (
     <div className='keypad'>
       {columnArray.map((item, index) => (
-        <KeypadColumn key={'column-' + index} buttonArray={item} {...props} />
+        <KeypadColumn
+          columnIndex={index}
+          key={'column-' + index}
+          buttonArray={item}
+          {...props}
+        />
       ))}
     </div>
   );
@@ -18,7 +23,9 @@ function Keypad({ columnArray, ...props }) {
 Keypad.propTypes = {
   columnArray: PropTypes.array,
   isSettingsMode: PropTypes.bool,
-  playSound: PropTypes.func
+  playSound: PropTypes.func,
+  editButton: PropTypes.func,
+  addButton: PropTypes.func
 };
 
 export default Keypad;
