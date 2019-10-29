@@ -17,6 +17,7 @@ function Keypad({ columnArray, ...props }) {
 
 Keypad.propTypes = {
   columnArray: PropTypes.array,
+  isSettingsMode: PropTypes.bool,
   playSound: PropTypes.func
 };
 

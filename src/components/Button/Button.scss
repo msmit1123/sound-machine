@@ -1,28 +1,47 @@
 @import '../../_variables.scss';
 
-.keypad__button {
-  margin: 5px;
-  padding: 10px;
-  height: 35px;
-  border-radius: 5px;
-  background-color: $button-color;
-  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
-  color: $accessory-color;
-  font-size: 12px;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-around;
-  align-items: center;
+.keypad {
+  &__button {
+    $size: 35px;
+    margin: 5px;
+    padding: 10px;
+    height: $size;
+    border-radius: 5px;
+    background-color: $button-color;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+    color: $accessory-color;
+    font-size: 12px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  &:hover {
-    background-color: $button-accent-color;
-  }
+    &:hover {
+      background-color: $button-accent-color;
+    }
 
-  &:active,
-  &--active,
-  &--active:hover {
-    background-color: $button-active-color;
+    &:active,
+    &--active,
+    &--active:hover {
+      background-color: $button-active-color;
+    }
+
+    &--add {
+      border-radius: 50%;
+      display: inline-block;
+      height: $size;
+      line-height: $size;
+      width: $size;
+      color: white;
+      background-color: $accessory-color;
+      &:hover {
+        background-color: darken($accessory-color, 10);
+      }
+      &:active {
+        background-color: $button-active-color;
+      }
+    }
   }
 }

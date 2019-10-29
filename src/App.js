@@ -202,6 +202,7 @@ class App extends React.Component {
           <Keypad
             columnArray={this.state.soundLibrary}
             playSound={this.playSound}
+            isSettingsMode={this.state.isSettingsMode}
           />
           <Controlpad
             isPlaying={this.state.isPlaying}
