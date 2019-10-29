@@ -33,6 +33,7 @@ function KeypadColumn(props) {
           <Button
             className='keypad__button keypad__button--settings-mode'
             key={'key-' + item.pressKey + '-' + index}
+            row-index={index}
             id={item.pressKey}
             onClick={props.editButton}
           >
@@ -59,8 +60,7 @@ KeypadColumn.propTypes = {
   buttonArray: PropTypes.array,
   playSound: PropTypes.func,
   editButton: PropTypes.func,
-  addButton: PropTypes.func,
-  closeEditButtonOverlay: PropTypes.func
+  addButton: PropTypes.func
 };
 
 export default KeypadColumn;

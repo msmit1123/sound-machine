@@ -17,6 +17,7 @@ class App extends React.Component {
       isRecording: false,
       isSettingsMode: false,
       isFormOpen: false,
+      nowEditingButton: { col: null, row: null },
       display: 'welcome',
       currentVolume: 80,
       soundLibrary: [
@@ -61,7 +62,8 @@ class App extends React.Component {
           {
             pressKey: 'x',
             title: 'snare',
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3'
+            url:
+              'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
           }
         ]
       ]
@@ -185,15 +187,26 @@ class App extends React.Component {
   }
 
   editButton(event) {
-    this.setState({ isFormOpen: true });
+    const target = event.target; //get div that was clicked
+    const col = target.parentNode.getAttribute('column-index'); //get its column number
+    const row = target.getAttribute('row-index'); //get its row number
+    console.log(col, row);
+    this.setState({
+      isFormOpen: true,
+      nowEditingButton: { col: col, row: row } //use X/Y Location because IDs may not be set up yet
+    });
   }
 
-  closeEditButtonOverlay() {
-    this.setState({ isFormOpen: false });
+  closeEditButtonOverlay(event) {
+    if (event.target !== event.currentTarget) {
+      return;
+    } else {
+      this.setState({ isFormOpen: false });
+    }
   }
 
   handleKeyDown(event) {
-    if (this.state.isOn) {
+    if (this.state.isOn && !this.state.isSettingsMode) {
       const key = document.getElementById(event.key);
       if (keyPresentlyHeld[event.key]) {
         return;
@@ -226,7 +239,6 @@ class App extends React.Component {
             columnArray={this.state.soundLibrary}
             playSound={this.playSound}
             editButton={this.editButton}
-            closeEditButtonOverlay={this.closeEditButtonOverlay}
             isSettingsMode={this.state.isSettingsMode}
             addButton={this.addButton}
           />
@@ -252,7 +264,14 @@ class App extends React.Component {
           {this.state.isFormOpen && (
             <FormOverlay
               closeEditButtonOverlay={this.closeEditButtonOverlay}
-            ></FormOverlay>
+              nowEditingButton={this.state.nowEditingButton}
+              //pass in information about the currently being edited clip
+              clipData={
+                this.state.soundLibrary[this.state.nowEditingButton.col][
+                  this.state.nowEditingButton.row
+                ]
+              }
+            />
           )}
         </div>
       </div>

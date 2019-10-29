@@ -11,10 +11,13 @@
     background-color: rgba(0, 0, 0, 0.4);
   }
   &__body {
+    padding: 10px;
     margin: 40px auto;
-    max-width: 400px;
+    max-width: 500px;
     color: darkslategrey;
     background-color: white;
+    border-radius: 5px;
+    box-shadow: 2px 3px 5px 10px rgba(0, 0, 0, 0.4);
   }
   &__input {
     //
