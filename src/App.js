@@ -173,12 +173,14 @@ class App extends React.Component {
 
   addButton(event) {
     const target = event.target; //div that was clicked
-    const colIndex = target.parentNode.getAttribute('columnIndex'); //column that was clicked
-
+    let colIndex = target.parentNode.getAttribute('column-index'); //column that was clicked
     const soundLibraryCopy = JSON.parse(
       JSON.stringify(this.state.soundLibrary)
     );
-
+    if (colIndex === 'addNewColumn') {
+      soundLibraryCopy.push([]); //add new blank colulmn
+      colIndex = soundLibraryCopy.length - 1; //set index to the new column
+    }
     soundLibraryCopy[colIndex].push({});
 
     this.setState({

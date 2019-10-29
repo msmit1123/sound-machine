@@ -1,7 +1,7 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 import './KeypadColumn.scss';
 
@@ -11,7 +11,8 @@ const MAX_BUTTON_ROWS = 9;
 
 function KeypadColumn(props) {
   return (
-    <div className='keypad__column' columnIndex={props.columnIndex}>
+    <div className='keypad__column' column-index={props.columnIndex}>
+      {/* render the rows of buttons */}
       {!props.isSettingsMode &&
         props.buttonArray.map((item, index) => (
           <Button
@@ -25,6 +26,7 @@ function KeypadColumn(props) {
             {item.pressKey}
           </Button>
         ))}
+      {/* when in settings mode, render an extra "add" button */}
       {props.isSettingsMode &&
         props.buttonArray.map((item, index) => (
           <Button
@@ -50,6 +52,8 @@ function KeypadColumn(props) {
 }
 
 KeypadColumn.propTypes = {
+  isSettingsMode: PropTypes.bool.isRequired,
+  columnIndex: PropTypes.number.isRequired,
   buttonArray: PropTypes.array,
   playSound: PropTypes.func,
   editButton: PropTypes.func,
