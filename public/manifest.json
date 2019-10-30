@@ -1,6 +1,6 @@
 {
-  "short_name": "sound machine",
-  "name": "Das Sound Machine",
+  "short_name": "sound-machine",
+  "name": "Das-Sound-Machine",
   "icons": [
     {
       "src": "favicon.ico",
