@@ -17,7 +17,7 @@ class FormOverlay extends React.Component {
       title: this.props.clipData.title,
       url: this.props.clipData.url,
       volume: this.props.clipData.volume,
-      tone: this.props.clipData.tone
+      speed: this.props.clipData.speed
     });
   }
 
@@ -35,9 +35,9 @@ class FormOverlay extends React.Component {
           <h3>Edit Button</h3>
           <h4>
             {'Column: ' +
-              (parseInt(this.props.nowEditingButton.col) + 1) +
+              (parseInt(this.props.nowEditingColumn) + 1) +
               '  Row: ' +
-              (parseInt(this.props.nowEditingButton.row) + 1)}
+              (parseInt(this.props.nowEditingRow) + 1)}
           </h4>
           <hr />
           Key:{' '}
@@ -71,17 +71,17 @@ class FormOverlay extends React.Component {
             onChange={this.handleChangeFor('volume')}
           />
           <hr />
-          Tone:{' '}
+          Playback Speed:{' '}
           <input
             type='range'
-            min='0'
-            max='100'
-            value={this.state.tone}
-            onChange={this.handleChangeFor('tone')}
+            min='25'
+            max='400'
+            value={this.state.speed}
+            onChange={this.handleChangeFor('speed')}
           />
           <hr />
           <div>
-            <Button>Delete</Button>
+            <Button onClick={this.props.deleteButton}>Delete</Button>
             <Button onClick={() => this.props.updateButton(this.state)}>
               Save
             </Button>
@@ -96,11 +96,10 @@ class FormOverlay extends React.Component {
 FormOverlay.propTypes = {
   children: PropTypes.node,
   closeEditButtonOverlay: PropTypes.func.isRequired,
-  nowEditingButton: PropTypes.shape({
-    col: PropTypes.number,
-    row: PropTypes.number
-  }),
-  updateButton: PropTypes.func
+  nowEditingColumn: PropTypes.number.isRequired,
+  nowEditingRow: PropTypes.number.isRequired,
+  updateButton: PropTypes.func,
+  deleteButton: PropTypes.func
 };
 
 export default FormOverlay;

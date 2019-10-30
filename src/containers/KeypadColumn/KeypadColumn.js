@@ -21,7 +21,8 @@ function KeypadColumn(props) {
             id={item.pressKey}
             title={item.title}
             onClick={props.playSound}
-            clipVolume={item.volume}
+            clip-volume={item.volume}
+            clip-speed={item.speed}
           >
             <audio src={item.url} />
             {item.pressKey}
@@ -57,7 +58,10 @@ function KeypadColumn(props) {
 
 KeypadColumn.propTypes = {
   isSettingsMode: PropTypes.bool.isRequired,
-  columnIndex: PropTypes.number.isRequired,
+  columnIndex: PropTypes.oneOfType([
+    PropTypes.number.isRequired,
+    PropTypes.string.isRequired
+  ]),
   buttonArray: PropTypes.array,
   playSound: PropTypes.func,
   editButton: PropTypes.func,

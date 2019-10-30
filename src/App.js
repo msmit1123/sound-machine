@@ -14,12 +14,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      hasError: false,
       isOn: true,
       isPlaying: false,
       isRecording: false,
       isSettingsMode: false,
       isFormOpen: false,
-      nowEditingButton: { col: null, row: null },
+      nowEditingColumn: 0,
+      nowEditingRow: 0,
       display: 'welcome',
       currentVolume: 80,
       soundLibrary: [
@@ -28,24 +30,28 @@ class App extends React.Component {
             pressKey: '1',
             title: 'chord 1',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
           },
           {
             pressKey: 'q',
             title: 'chord 2',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
           },
           {
             pressKey: 'a',
             title: 'chord 3',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
           },
           {
             pressKey: 'z',
             title: 'closed HH',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
           }
         ],
@@ -54,24 +60,28 @@ class App extends React.Component {
             pressKey: '2',
             title: 'open HH',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
           },
           {
             pressKey: 'w',
             title: 'punchy kick',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
           },
           {
             pressKey: 's',
             title: 'side stick',
             volume: 100,
+            speed: 100,
             url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
           },
           {
             pressKey: 'x',
             title: 'snare',
             volume: 100,
+            speed: 100,
             url:
               'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
           }
@@ -79,10 +89,10 @@ class App extends React.Component {
       ]
     };
 
-    this.playSound = this.playSound.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
 
+    this.playSound = this.playSound.bind(this);
     this.pauseAllAudio = this.pauseAllAudio.bind(this);
     this.changeVolume = this.changeVolume.bind(this);
 
@@ -94,15 +104,24 @@ class App extends React.Component {
     this.addButton = this.addButton.bind(this);
     this.editButton = this.editButton.bind(this);
     this.updateButton = this.updateButton.bind(this);
+    this.deleteButton = this.deleteButton.bind(this);
     this.closeEditButtonOverlay = this.closeEditButtonOverlay.bind(this);
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.log(error, errorInfo);
+    alert('unfortunately we have encountered an error');
   }
 
   componentDidMount() {
     //add event listener for keyboard presses on mount
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
-    document.addEventListener('mousedown', this.handleMouseDown);
-    document.addEventListener('mouseup', this.handleMouseUp);
   }
   componentWillUnmount() {
     //remove on unmount
@@ -173,9 +192,12 @@ class App extends React.Component {
     const target = event.target;
     const sound = target.getElementsByTagName('audio')[0];
     const globalVolume = this.state.currentVolume / 100;
-    const clipVolume = target.getAttribute('clipVolume') / 100;
+    const clipVolume = target.getAttribute('clip-volume') / 100;
+    const clipSpeed = target.getAttribute('clip-speed') / 100;
+
     sound.currentTime = 0;
     sound.volume = globalVolume * clipVolume;
+    sound.playbackRate = clipSpeed;
     if (this.state.isOn) {
       sound.play();
       this.setState({ display: target.title });
@@ -199,20 +221,38 @@ class App extends React.Component {
   }
 
   editButton(event) {
-    const target = event.target; //get div that was clicked
+    let target = event.target; //get element that was clicked
+    //if the gear icon is clicked rather than the button, make sure to get the div itself
+    if (!target.hasAttribute('row-index')) {
+      target = target.closest('.keypad__button');
+    }
+    let row = target.getAttribute('row-index'); //get its row number
     const col = target.parentNode.getAttribute('column-index'); //get its column number
-    const row = target.getAttribute('row-index'); //get its row number
     this.setState({
       isFormOpen: true,
-      nowEditingButton: { col: col, row: row } //use X/Y Location because IDs may not be set up yet
+      nowEditingColumn: col, //use X/Y Location because IDs may not be set up yet
+      nowEditingRow: row
     });
     this.forceUpdate();
   }
 
+  deleteButton() {
+    let soundLibraryCopy = deepCopy(this.state.soundLibrary);
+    soundLibraryCopy[this.state.nowEditingColumn].splice(
+      this.state.nowEditingRow,
+      1
+    );
+    if (soundLibraryCopy[this.state.nowEditingColumn].length === 0) {
+      soundLibraryCopy.splice(this.state.nowEditingColumn, 1);
+    }
+    this.setState({ soundLibrary: soundLibraryCopy });
+    this.closeEditButtonOverlay();
+  }
+
   updateButton(formState) {
     let soundLibraryCopy = deepCopy(this.state.soundLibrary);
-    soundLibraryCopy[this.state.nowEditingButton.col][
-      this.state.nowEditingButton.row
+    soundLibraryCopy[this.state.nowEditingColumn][
+      this.state.nowEditingRow
     ] = formState;
     this.setState({ soundLibrary: soundLibraryCopy });
 
@@ -223,8 +263,9 @@ class App extends React.Component {
     if (event === undefined || event.target === event.currentTarget) {
       this.setState({
         isFormOpen: false,
-        nowEditingButton: { col: null, row: null }
+        nowEditingButton: { col: 0, row: 0 }
       });
+      this.forceUpdate();
     } else {
       return;
     }
@@ -255,10 +296,12 @@ class App extends React.Component {
   }
 
   render() {
+    if (this.state.hasError) {
+      // render error fallback UI
+      return <h1>Something went wrong. Please Refresh</h1>;
+    }
     return (
       <div className='App'>
-        {/* Power: {this.state.isOn ? 'on' : 'off'} <br />
-        Settings Mode: {this.state.isSettingsMode ? 'settings' : 'play'} */}
         <div className='sound-machine'>
           <Keypad
             columnArray={this.state.soundLibrary}
@@ -289,12 +332,14 @@ class App extends React.Component {
           {this.state.isFormOpen && (
             <FormOverlay
               closeEditButtonOverlay={this.closeEditButtonOverlay}
-              nowEditingButton={this.state.nowEditingButton}
+              nowEditingColumn={this.state.nowEditingColumn}
+              nowEditingRow={this.state.nowEditingRow}
               updateButton={this.updateButton}
+              deleteButton={this.deleteButton}
               //pass in information about the currently being edited clip
               clipData={
-                this.state.soundLibrary[this.state.nowEditingButton.col][
-                  this.state.nowEditingButton.row
+                this.state.soundLibrary[this.state.nowEditingColumn][
+                  this.state.nowEditingRow
                 ]
               }
             />
