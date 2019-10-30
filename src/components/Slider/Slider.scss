@@ -59,7 +59,7 @@
       height: var(--slider-height);
       width: var(--slider-width);
       border-radius: 3px;
-      background: #253031;
+      background: $button-color;
       cursor: pointer;
     }
     input[type='range']::-ms-track {
