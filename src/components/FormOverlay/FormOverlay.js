@@ -1,5 +1,7 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import './FormOverlay.scss';
 
@@ -33,15 +35,9 @@ class FormOverlay extends React.Component {
       >
         <div className='form__body'>
           <h3>Edit Button</h3>
-          <h4>
-            {'Column: ' +
-              (parseInt(this.props.nowEditingColumn) + 1) +
-              '  Row: ' +
-              (parseInt(this.props.nowEditingRow) + 1)}
-          </h4>
-          <hr />
           Key:{' '}
           <input
+            className='form__input'
             type='text'
             maxLength='1'
             value={this.state.pressKey}
@@ -50,6 +46,7 @@ class FormOverlay extends React.Component {
           <hr />
           Clip Title:{' '}
           <input
+            className='form__input'
             type='text'
             value={this.state.title}
             onChange={this.handleChangeFor('title')}
@@ -57,6 +54,7 @@ class FormOverlay extends React.Component {
           <hr />
           URL:{' '}
           <input
+            className='form__input'
             type='text'
             value={this.state.url}
             onChange={this.handleChangeFor('url')}
@@ -64,6 +62,7 @@ class FormOverlay extends React.Component {
           <hr />
           Volume:{' '}
           <input
+            className='form__input'
             type='range'
             min='0'
             max='100'
@@ -73,6 +72,7 @@ class FormOverlay extends React.Component {
           <hr />
           Playback Speed:{' '}
           <input
+            className='form__input'
             type='range'
             min='25'
             max='400'
@@ -81,8 +81,16 @@ class FormOverlay extends React.Component {
           />
           <hr />
           <div>
-            <Button onClick={this.props.deleteButton}>Delete</Button>
-            <Button onClick={() => this.props.updateButton(this.state)}>
+            <Button
+              className='form__button form__button--left form__button--warning'
+              onClick={this.props.deleteButton}
+            >
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </Button>
+            <Button
+              className='form__button'
+              onClick={() => this.props.updateButton(this.state)}
+            >
               Save
             </Button>
           </div>

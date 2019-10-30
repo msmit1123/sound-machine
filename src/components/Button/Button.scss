@@ -45,3 +45,41 @@
     }
   }
 }
+
+.form {
+  &__button {
+    $size: 20px;
+    margin: 5px;
+    padding: 10px;
+    height: $size;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: $button-color;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 12px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: $button-accent-color;
+    }
+
+    &:active,
+    &--active,
+    &--active:hover {
+      background-color: $button-active-color;
+    }
+
+    &--left {
+      float: left;
+    }
+    &--warning {
+      background-color: rgba(200, 100, 100, 1);
+    }
+  }
+}
