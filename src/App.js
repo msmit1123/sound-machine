@@ -50,6 +50,8 @@ class App extends React.Component {
     this.stopPlayingLoop = this.stopPlayingLoop.bind(this);
     this.playSoundsInLoop = this.playSoundsInLoop.bind(this);
     this.advanceLoopTime = this.advanceLoopTime.bind(this);
+    this.changeTime = this.changeTime.bind(this);
+    this.changeLoopLength = this.changeLoopLength.bind(this);
 
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
@@ -165,6 +167,18 @@ class App extends React.Component {
     }));
     if (this.state.loopTime > this.state.loopLength) {
       this.setState({ loopTime: 0 });
+    }
+  }
+  changeLoopLength(event) {
+    if (this.state.isOn) {
+      const time = event.target.value;
+      this.setState({ loopLength: time });
+    }
+  }
+  changeTime(event) {
+    if (this.state.isOn) {
+      const time = parseInt(event.target.value);
+      this.setState({ loopTime: time });
     }
   }
 
@@ -346,6 +360,11 @@ class App extends React.Component {
             //
             isOn={this.state.isOn}
             togglePower={this.togglePower}
+            //
+            loopTime={this.state.loopTime}
+            changeTime={this.changeTime}
+            loopLength={this.state.loopLength}
+            changeLoopLength={this.changeLoopLength}
             //
             display={this.state.display}
             //

@@ -62,10 +62,16 @@ function Controlpad(props) {
       </div>
       <div className='controls__module'>
         <div className='controls__display'>
-          <span className='left'>current</span>{' '}
-          <span className='right'>/max</span>
+          <span className='left'>{props.loopTime}</span>{' '}
+          <span className='right'>{props.loopLength}</span>
         </div>
-        <Slider>
+        <Slider
+          id='play-slider'
+          min={0}
+          max={props.loopLength}
+          value={props.loopTime}
+          onChange={props.changeTime}
+        >
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
@@ -100,6 +106,11 @@ Controlpad.propTypes = {
   //
   isOn: PropTypes.bool,
   togglePower: PropTypes.func,
+  //
+  loopTime: PropTypes.number,
+  changeTime: PropTypes.func,
+  loopLength: PropTypes.number,
+  changeLoopLength: PropTypes.func,
   //
   display: PropTypes.string,
   //
