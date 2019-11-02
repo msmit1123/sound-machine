@@ -101,6 +101,7 @@ class App extends React.Component {
     if (this.state.isOn) {
       if (!this.state.isRecording) {
         this.setState({ isPlaying: true, isRecording: true });
+        this.startPlayingLoop();
       } else {
         this.setState({ isRecording: false });
       }
@@ -108,9 +109,17 @@ class App extends React.Component {
   }
   toggleSettings() {
     if (this.state.isOn) {
-      this.setState((prevState) => ({
-        isSettingsMode: !prevState.isSettingsMode
-      }));
+      if (this.state.isSettingsMode) {
+        this.setState({ isSettingsMode: false });
+      } else {
+        this.stopPlayingLoop();
+        this.pauseAllAudio();
+        this.setState({
+          isSettingsMode: true,
+          isRecording: false,
+          isPlaying: false
+        });
+      }
     }
   }
   togglePower() {
