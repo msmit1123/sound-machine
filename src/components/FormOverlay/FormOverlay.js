@@ -18,8 +18,8 @@ class FormOverlay extends React.Component {
       pressKey: this.props.clipData.pressKey,
       title: this.props.clipData.title,
       url: this.props.clipData.url,
-      volume: this.props.clipData.volume,
-      speed: this.props.clipData.speed
+      volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
+      speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
   }
 
@@ -60,7 +60,7 @@ class FormOverlay extends React.Component {
             onChange={this.handleChangeFor('url')}
           />
           <hr />
-          Volume:{' '}
+          Volume: {this.state.volume}
           <input
             className='form__input'
             type='range'
@@ -70,7 +70,7 @@ class FormOverlay extends React.Component {
             onChange={this.handleChangeFor('volume')}
           />
           <hr />
-          Playback Speed:{' '}
+          Playback Speed: {this.state.speed / 100 + 'x'}
           <input
             className='form__input'
             type='range'

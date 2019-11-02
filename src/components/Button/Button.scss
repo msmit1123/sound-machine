@@ -29,11 +29,12 @@
     }
 
     &--add {
+      $size-modifier: 0.75;
       border-radius: 50%;
       display: inline-block;
-      height: $size;
-      line-height: $size;
-      width: $size;
+      height: $size * $size-modifier;
+      line-height: $size * $size-modifier;
+      width: $size * $size-modifier;
       color: white;
       background-color: $accessory-color;
       &:hover {
