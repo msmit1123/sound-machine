@@ -7,8 +7,14 @@ import Controlpad from './containers/ControlPad/Controlpad.js';
 import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
 import { deepCopy } from './helperFunctions.js';
+import {
+  initialSoundLibrary,
+  initialLoopLength,
+  initialSoundLoop
+} from './initialSoundLibrary.js';
 
-const LOOP_INTERVAL_INCREMENT = 50;
+//declare scoped variables
+const LOOP_TIMING_FIDELITY = 50;
 const keyPresentlyHeld = {};
 let soundLoop = null;
 
@@ -26,78 +32,10 @@ class App extends React.Component {
       nowEditingRow: 0,
       display: 'welcome',
       currentVolume: 80,
-      soundLibrary: [
-        [
-          {
-            pressKey: '1',
-            title: 'chord 1',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
-          },
-          {
-            pressKey: 'q',
-            title: 'chord 2',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
-          },
-          {
-            pressKey: 'a',
-            title: 'chord 3',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
-          },
-          {
-            pressKey: 'z',
-            title: 'closed HH',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
-          }
-        ],
-        [
-          {
-            pressKey: '2',
-            title: 'open HH',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
-          },
-          {
-            pressKey: 'w',
-            title: 'punchy kick',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
-          },
-          {
-            pressKey: 's',
-            title: 'side stick',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
-          },
-          {
-            pressKey: 'x',
-            title: 'snare',
-            volume: 100,
-            speed: 100,
-            url:
-              'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
-          }
-        ]
-      ],
-      loopLength: 1800,
+      soundLibrary: initialSoundLibrary,
       loopTime: 0,
-      loop: [
-        { time: 0, column: 1, row: 1 },
-        { time: 500, column: 1, row: 0 },
-        { time: 700, column: 1, row: 1 },
-        { time: 1150, column: 1, row: 1 },
-        { time: 1400, column: 1, row: 0 }
-      ]
+      loopLength: initialLoopLength,
+      loop: initialSoundLoop
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -111,6 +49,7 @@ class App extends React.Component {
     this.startPlayingLoop = this.startPlayingLoop.bind(this);
     this.stopPlayingLoop = this.stopPlayingLoop.bind(this);
     this.playSoundsInLoop = this.playSoundsInLoop.bind(this);
+    this.advanceLoopTime = this.advanceLoopTime.bind(this);
 
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
@@ -143,6 +82,7 @@ class App extends React.Component {
     //remove on unmount
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
+    this.stopPlayingLoop();
   }
 
   togglePlay() {
@@ -191,7 +131,7 @@ class App extends React.Component {
   }
 
   startPlayingLoop() {
-    soundLoop = setInterval(this.playSoundsInLoop, LOOP_INTERVAL_INCREMENT);
+    soundLoop = setInterval(this.playSoundsInLoop, LOOP_TIMING_FIDELITY);
   }
   stopPlayingLoop() {
     clearInterval(soundLoop);
@@ -200,13 +140,16 @@ class App extends React.Component {
     const curTime = this.state.loopTime;
     const soundsInThisInterval = this.state.loop.filter(
       (item) =>
-        item.time >= curTime && item.time < curTime + LOOP_INTERVAL_INCREMENT
+        item.time >= curTime && item.time < curTime + LOOP_TIMING_FIDELITY
     );
     soundsInThisInterval.forEach((item) =>
       this.playSound(item.column, item.row)
     );
+    this.advanceLoopTime();
+  }
+  advanceLoopTime() {
     this.setState((prevState) => ({
-      loopTime: prevState.loopTime + LOOP_INTERVAL_INCREMENT
+      loopTime: prevState.loopTime + LOOP_TIMING_FIDELITY
     }));
     if (this.state.loopTime > this.state.loopLength) {
       this.setState({ loopTime: 0 });
@@ -241,7 +184,13 @@ class App extends React.Component {
     const clicked = true;
     this.playSound(column, row, clicked);
     if (this.state.isRecording) {
-      //save current time window to state
+      const loopCopy = deepCopy(this.state.loop);
+      loopCopy.push({
+        time: this.state.loopTime,
+        column: column,
+        row: row
+      });
+      this.setState({ loop: loopCopy });
     }
   }
 
@@ -365,7 +314,6 @@ class App extends React.Component {
     return (
       <div className='App'>
         <div className='sound-machine'>
-          {this.state.loopTime}
           <Keypad
             columnArray={this.state.soundLibrary}
             //playSound={this.playSound}
