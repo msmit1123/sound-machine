@@ -60,7 +60,7 @@ class FormOverlay extends React.Component {
             onChange={this.handleChangeFor('url')}
           />
           <hr />
-          Volume:{' '}
+          Volume: {this.state.volume}
           <input
             className='form__input'
             type='range'
@@ -70,7 +70,7 @@ class FormOverlay extends React.Component {
             onChange={this.handleChangeFor('volume')}
           />
           <hr />
-          Playback Speed:{' '}
+          Playback Speed: {this.state.speed / 100 + 'x'}
           <input
             className='form__input'
             type='range'
