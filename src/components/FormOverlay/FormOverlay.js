@@ -18,8 +18,8 @@ class FormOverlay extends React.Component {
       pressKey: this.props.clipData.pressKey,
       title: this.props.clipData.title,
       url: this.props.clipData.url,
-      volume: this.props.clipData.volume,
-      speed: this.props.clipData.speed
+      volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
+      speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
   }
 
