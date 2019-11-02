@@ -8,7 +8,9 @@ import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
 import { deepCopy } from './helperFunctions.js';
 
+const LOOP_INTERVAL_INCREMENT = 50;
 const keyPresentlyHeld = {};
+let soundLoop = null;
 
 class App extends React.Component {
   constructor(props) {
@@ -86,6 +88,15 @@ class App extends React.Component {
               'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
           }
         ]
+      ],
+      loopLength: 1800,
+      loopTime: 0,
+      loop: [
+        { time: 0, column: 1, row: 1 },
+        { time: 500, column: 1, row: 0 },
+        { time: 700, column: 1, row: 1 },
+        { time: 1150, column: 1, row: 1 },
+        { time: 1400, column: 1, row: 0 }
       ]
     };
 
@@ -96,6 +107,10 @@ class App extends React.Component {
     this.playSound = this.playSound.bind(this);
     this.pauseAllAudio = this.pauseAllAudio.bind(this);
     this.changeVolume = this.changeVolume.bind(this);
+
+    this.startPlayingLoop = this.startPlayingLoop.bind(this);
+    this.stopPlayingLoop = this.stopPlayingLoop.bind(this);
+    this.playSoundsInLoop = this.playSoundsInLoop.bind(this);
 
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
@@ -134,8 +149,11 @@ class App extends React.Component {
     if (this.state.isOn) {
       if (this.state.isPlaying) {
         this.setState({ isPlaying: false, isRecording: false });
+        this.stopPlayingLoop();
+        this.pauseAllAudio();
       } else {
         this.setState({ isPlaying: true });
+        this.startPlayingLoop();
       }
     }
   }
@@ -169,6 +187,29 @@ class App extends React.Component {
     }
     if (!this.state.isOn) {
       this.setState({ isOn: true });
+    }
+  }
+
+  startPlayingLoop() {
+    soundLoop = setInterval(this.playSoundsInLoop, LOOP_INTERVAL_INCREMENT);
+  }
+  stopPlayingLoop() {
+    clearInterval(soundLoop);
+  }
+  playSoundsInLoop() {
+    const curTime = this.state.loopTime;
+    const soundsInThisInterval = this.state.loop.filter(
+      (item) =>
+        item.time >= curTime && item.time < curTime + LOOP_INTERVAL_INCREMENT
+    );
+    soundsInThisInterval.forEach((item) =>
+      this.playSound(item.column, item.row)
+    );
+    this.setState((prevState) => ({
+      loopTime: prevState.loopTime + LOOP_INTERVAL_INCREMENT
+    }));
+    if (this.state.loopTime > this.state.loopLength) {
+      this.setState({ loopTime: 0 });
     }
   }
 
@@ -324,6 +365,7 @@ class App extends React.Component {
     return (
       <div className='App'>
         <div className='sound-machine'>
+          {this.state.loopTime}
           <Keypad
             columnArray={this.state.soundLibrary}
             //playSound={this.playSound}
