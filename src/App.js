@@ -131,7 +131,11 @@ class App extends React.Component {
 
   togglePlay() {
     if (this.state.isOn) {
-      this.setState((prevState) => ({ isPlaying: !prevState.isPlaying }));
+      if (this.state.isPlaying) {
+        this.setState({ isPlaying: false, isRecording: false });
+      } else {
+        this.setState({ isPlaying: true });
+      }
     }
   }
   toggleRecord() {
