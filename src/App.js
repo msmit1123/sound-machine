@@ -140,7 +140,10 @@ class App extends React.Component {
   }
 
   startPlayingLoop() {
-    soundLoop = setInterval(this.playSoundsInLoop, LOOP_TIMING_FIDELITY);
+    if (!this.state.isPlaying) {
+      soundLoop = setInterval(this.playSoundsInLoop, LOOP_TIMING_FIDELITY);
+      this.setState({ isPlaying: true });
+    }
   }
   stopPlayingLoop() {
     clearInterval(soundLoop);
@@ -209,8 +212,8 @@ class App extends React.Component {
     const sound = row.getElementsByTagName('audio')[0];
     const globalVolume = this.state.currentVolume / 100;
     const clipData = this.state.soundLibrary[columnNum][rowNum];
-    const clipVolume = clipData.volume / 100;
-    const clipSpeed = clipData.speed / 100;
+    const clipVolume = clipData.volume ? clipData.volume / 100 : 1;
+    const clipSpeed = clipData.speed ? clipData.speed / 100 : 1;
     const { title } = clipData;
 
     sound.currentTime = 0;
