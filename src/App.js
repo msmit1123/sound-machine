@@ -91,6 +91,7 @@ class App extends React.Component {
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleSoundButtonClick = this.handleSoundButtonClick.bind(this);
 
     this.playSound = this.playSound.bind(this);
     this.pauseAllAudio = this.pauseAllAudio.bind(this);
@@ -192,19 +193,35 @@ class App extends React.Component {
     }
   }
 
-  playSound(event) {
+  handleSoundButtonClick(event) {
     const target = event.target;
-    const sound = target.getElementsByTagName('audio')[0];
+    const column = target.parentNode.getAttribute('column-index');
+    const row = target.getAttribute('row-index');
+    const clicked = true;
+    this.playSound(column, row, clicked);
+    if (this.state.isRecording) {
+      //save current time window to state
+    }
+  }
+
+  playSound(columnNum, rowNum, clicked) {
+    const column = document.getElementsByClassName('keypad__column')[columnNum];
+    const row = column.getElementsByClassName('keypad__button')[rowNum];
+    const sound = row.getElementsByTagName('audio')[0];
     const globalVolume = this.state.currentVolume / 100;
-    const clipVolume = target.getAttribute('clip-volume') / 100;
-    const clipSpeed = target.getAttribute('clip-speed') / 100;
+    const clipData = this.state.soundLibrary[columnNum][rowNum];
+    const clipVolume = clipData.volume / 100;
+    const clipSpeed = clipData.speed / 100;
+    const { title } = clipData;
 
     sound.currentTime = 0;
     sound.volume = globalVolume * clipVolume;
     sound.playbackRate = clipSpeed;
     if (this.state.isOn) {
       sound.play();
-      this.setState({ display: target.title });
+      if (clicked === true) {
+        this.setState({ display: title });
+      }
     }
   }
 
@@ -309,7 +326,8 @@ class App extends React.Component {
         <div className='sound-machine'>
           <Keypad
             columnArray={this.state.soundLibrary}
-            playSound={this.playSound}
+            //playSound={this.playSound}
+            handleSoundButtonClick={this.handleSoundButtonClick}
             editButton={this.editButton}
             isSettingsMode={this.state.isSettingsMode}
             addButton={this.addButton}
