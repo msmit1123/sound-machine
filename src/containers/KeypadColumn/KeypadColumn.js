@@ -20,9 +20,10 @@ function KeypadColumn(props) {
             key={'key-' + item.pressKey + '-' + index}
             id={item.pressKey}
             title={item.title}
-            onClick={props.playSound}
+            onClick={props.handleSoundButtonClick}
             clip-volume={item.volume}
             clip-speed={item.speed}
+            row-index={index}
           >
             <audio src={item.url} />
             {item.pressKey}
@@ -63,7 +64,7 @@ KeypadColumn.propTypes = {
     PropTypes.string.isRequired
   ]),
   buttonArray: PropTypes.array,
-  playSound: PropTypes.func,
+  handleSoundButtonClick: PropTypes.func,
   editButton: PropTypes.func,
   addButton: PropTypes.func
 };

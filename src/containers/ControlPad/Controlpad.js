@@ -15,6 +15,10 @@ import './Controlpad.scss';
 import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch.js';
 import Slider from '../../components/Slider/Slider.js';
 
+import { formatMilliseconds } from '../../helperFunctions.js';
+
+const MAX_LENGTH = 10000;
+
 function Controlpad(props) {
   return (
     <div className='controls'>
@@ -62,10 +66,32 @@ function Controlpad(props) {
       </div>
       <div className='controls__module'>
         <div className='controls__display'>
-          <span className='left'>current</span>{' '}
-          <span className='right'>/max</span>
+          <span className='left'>
+            {props.isSettingsMode
+              ? 'Set loop length in ms:'
+              : formatMilliseconds(props.loopTime)}
+          </span>
+          {props.isSettingsMode ? '' : <span>/</span>}
+          <span className='right'>
+            {props.isSettingsMode && (
+              <input
+                className='controls__input'
+                value={props.loopLength}
+                onChange={props.changeLoopLength}
+              />
+            )}
+            {!props.isSettingsMode && formatMilliseconds(props.loopLength)}
+          </span>
         </div>
-        <Slider>
+        <Slider
+          id='play-slider'
+          min={0}
+          max={props.isSettingsMode ? MAX_LENGTH : props.loopLength}
+          value={props.isSettingsMode ? props.loopLength : props.loopTime}
+          onChange={
+            props.isSettingsMode ? props.changeLoopLength : props.changeTime
+          }
+        >
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
@@ -100,6 +126,11 @@ Controlpad.propTypes = {
   //
   isOn: PropTypes.bool,
   togglePower: PropTypes.func,
+  //
+  loopTime: PropTypes.number,
+  changeTime: PropTypes.func,
+  loopLength: PropTypes.number,
+  changeLoopLength: PropTypes.func,
   //
   display: PropTypes.string,
   //

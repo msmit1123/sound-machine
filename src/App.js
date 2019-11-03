@@ -7,8 +7,16 @@ import Controlpad from './containers/ControlPad/Controlpad.js';
 import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
 import { deepCopy } from './helperFunctions.js';
+import {
+  initialSoundLibrary,
+  initialLoopLength,
+  initialSoundLoop
+} from './initialSoundLibrary.js';
 
+//declare scoped variables
+const LOOP_TIMING_FIDELITY = 50;
 const keyPresentlyHeld = {};
+let soundLoop = null;
 
 class App extends React.Component {
   constructor(props) {
@@ -24,77 +32,26 @@ class App extends React.Component {
       nowEditingRow: 0,
       display: 'welcome',
       currentVolume: 80,
-      soundLibrary: [
-        [
-          {
-            pressKey: '1',
-            title: 'chord 1',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3'
-          },
-          {
-            pressKey: 'q',
-            title: 'chord 2',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3'
-          },
-          {
-            pressKey: 'a',
-            title: 'chord 3',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3'
-          },
-          {
-            pressKey: 'z',
-            title: 'closed HH',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
-          }
-        ],
-        [
-          {
-            pressKey: '2',
-            title: 'open HH',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3'
-          },
-          {
-            pressKey: 'w',
-            title: 'punchy kick',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3'
-          },
-          {
-            pressKey: 's',
-            title: 'side stick',
-            volume: 100,
-            speed: 100,
-            url: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3'
-          },
-          {
-            pressKey: 'x',
-            title: 'snare',
-            volume: 100,
-            speed: 100,
-            url:
-              'http://www.flashkit.com/imagesvr_ce/flashkit/soundfx/Instruments/Drums/Hihats/idg_Hi_H-intermed-2283/idg_Hi_H-intermed-2283_hifi.mp3'
-          }
-        ]
-      ]
+      soundLibrary: initialSoundLibrary,
+      loopTime: 0,
+      loopLength: initialLoopLength,
+      loop: initialSoundLoop
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.handleSoundButtonClick = this.handleSoundButtonClick.bind(this);
 
     this.playSound = this.playSound.bind(this);
     this.pauseAllAudio = this.pauseAllAudio.bind(this);
     this.changeVolume = this.changeVolume.bind(this);
+
+    this.startPlayingLoop = this.startPlayingLoop.bind(this);
+    this.stopPlayingLoop = this.stopPlayingLoop.bind(this);
+    this.playSoundsInLoop = this.playSoundsInLoop.bind(this);
+    this.advanceLoopTime = this.advanceLoopTime.bind(this);
+    this.changeTime = this.changeTime.bind(this);
+    this.changeLoopLength = this.changeLoopLength.bind(this);
 
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
@@ -127,17 +84,26 @@ class App extends React.Component {
     //remove on unmount
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
+    this.stopPlayingLoop();
   }
 
   togglePlay() {
     if (this.state.isOn) {
-      this.setState((prevState) => ({ isPlaying: !prevState.isPlaying }));
+      if (this.state.isPlaying) {
+        this.setState({ isPlaying: false, isRecording: false });
+        this.stopPlayingLoop();
+        this.pauseAllAudio();
+      } else {
+        this.setState({ isPlaying: true });
+        this.startPlayingLoop();
+      }
     }
   }
   toggleRecord() {
     if (this.state.isOn) {
       if (!this.state.isRecording) {
         this.setState({ isPlaying: true, isRecording: true });
+        this.startPlayingLoop();
       } else {
         this.setState({ isRecording: false });
       }
@@ -145,9 +111,17 @@ class App extends React.Component {
   }
   toggleSettings() {
     if (this.state.isOn) {
-      this.setState((prevState) => ({
-        isSettingsMode: !prevState.isSettingsMode
-      }));
+      if (this.state.isSettingsMode) {
+        this.setState({ isSettingsMode: false });
+      } else {
+        this.stopPlayingLoop();
+        this.pauseAllAudio();
+        this.setState({
+          isSettingsMode: true,
+          isRecording: false,
+          isPlaying: false
+        });
+      }
     }
   }
   togglePower() {
@@ -164,6 +138,47 @@ class App extends React.Component {
     }
     if (!this.state.isOn) {
       this.setState({ isOn: true });
+    }
+  }
+
+  startPlayingLoop() {
+    if (!this.state.isPlaying) {
+      soundLoop = setInterval(this.playSoundsInLoop, LOOP_TIMING_FIDELITY);
+      this.setState({ isPlaying: true });
+    }
+  }
+  stopPlayingLoop() {
+    clearInterval(soundLoop);
+  }
+  playSoundsInLoop() {
+    const curTime = this.state.loopTime;
+    const soundsInThisInterval = this.state.loop.filter(
+      (item) =>
+        item.time >= curTime && item.time < curTime + LOOP_TIMING_FIDELITY
+    );
+    soundsInThisInterval.forEach((item) =>
+      this.playSound(item.column, item.row)
+    );
+    this.advanceLoopTime();
+  }
+  advanceLoopTime() {
+    this.setState((prevState) => ({
+      loopTime: prevState.loopTime + LOOP_TIMING_FIDELITY
+    }));
+    if (this.state.loopTime > this.state.loopLength) {
+      this.setState({ loopTime: 0 });
+    }
+  }
+  changeLoopLength(event) {
+    if (this.state.isOn) {
+      const time = event.target.value;
+      this.setState({ loopLength: time });
+    }
+  }
+  changeTime(event) {
+    if (this.state.isOn) {
+      const time = parseInt(event.target.value);
+      this.setState({ loopTime: time });
     }
   }
 
@@ -188,19 +203,41 @@ class App extends React.Component {
     }
   }
 
-  playSound(event) {
+  handleSoundButtonClick(event) {
     const target = event.target;
-    const sound = target.getElementsByTagName('audio')[0];
+    const column = target.parentNode.getAttribute('column-index');
+    const row = target.getAttribute('row-index');
+    const clicked = true;
+    this.playSound(column, row, clicked);
+    if (this.state.isRecording) {
+      const loopCopy = deepCopy(this.state.loop);
+      loopCopy.push({
+        time: this.state.loopTime,
+        column: column,
+        row: row
+      });
+      this.setState({ loop: loopCopy });
+    }
+  }
+
+  playSound(columnNum, rowNum, clicked) {
+    const column = document.getElementsByClassName('keypad__column')[columnNum];
+    const row = column.getElementsByClassName('keypad__button')[rowNum];
+    const sound = row.getElementsByTagName('audio')[0];
     const globalVolume = this.state.currentVolume / 100;
-    const clipVolume = target.getAttribute('clip-volume') / 100;
-    const clipSpeed = target.getAttribute('clip-speed') / 100;
+    const clipData = this.state.soundLibrary[columnNum][rowNum];
+    const clipVolume = clipData.volume ? clipData.volume / 100 : 1;
+    const clipSpeed = clipData.speed ? clipData.speed / 100 : 1;
+    const { title } = clipData;
 
     sound.currentTime = 0;
     sound.volume = globalVolume * clipVolume;
     sound.playbackRate = clipSpeed;
     if (this.state.isOn) {
       sound.play();
-      this.setState({ display: target.title });
+      if (clicked === true) {
+        this.setState({ display: title });
+      }
     }
   }
 
@@ -305,7 +342,8 @@ class App extends React.Component {
         <div className='sound-machine'>
           <Keypad
             columnArray={this.state.soundLibrary}
-            playSound={this.playSound}
+            //playSound={this.playSound}
+            handleSoundButtonClick={this.handleSoundButtonClick}
             editButton={this.editButton}
             isSettingsMode={this.state.isSettingsMode}
             addButton={this.addButton}
@@ -322,6 +360,11 @@ class App extends React.Component {
             //
             isOn={this.state.isOn}
             togglePower={this.togglePower}
+            //
+            loopTime={this.state.loopTime}
+            changeTime={this.changeTime}
+            loopLength={this.state.loopLength}
+            changeLoopLength={this.changeLoopLength}
             //
             display={this.state.display}
             //
