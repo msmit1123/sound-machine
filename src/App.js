@@ -29,6 +29,7 @@ class App extends React.Component {
       isRecording: false,
       isSettingsMode: false,
       isFormOpen: false,
+      title: 'change me',
       nowEditingColumn: 0,
       nowEditingRow: 0,
       display: 'welcome',
@@ -53,6 +54,7 @@ class App extends React.Component {
     this.advanceLoopTime = this.advanceLoopTime.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.changeLoopLength = this.changeLoopLength.bind(this);
+    this.changeTitle = this.changeTitle.bind(this);
 
     this.togglePlay = this.togglePlay.bind(this);
     this.toggleRecord = this.toggleRecord.bind(this);
@@ -187,6 +189,11 @@ class App extends React.Component {
     }
   }
 
+  changeTitle(event) {
+    const title = event.target.value;
+    this.setState({ title: title });
+  }
+
   setSoundLibrary(length, library, loop) {
     this.setState({
       soundLibrary: library ? library : this.state.soundLibrary,
@@ -196,8 +203,10 @@ class App extends React.Component {
     });
   }
   saveAndDownloadState() {
-    fileDownload(JSON.stringify(this.state), 'song.DSM');
+    let filename = this.state.title !== '' ? this.state.title : 'new-song';
+    fileDownload(JSON.stringify(this.state), filename + '.DSM');
   }
+  uploadAndImportState() {}
 
   pauseAllAudio() {
     const sounds = document.getElementsByTagName('audio');
@@ -381,6 +390,9 @@ class App extends React.Component {
             changeTime={this.changeTime}
             loopLength={this.state.loopLength}
             changeLoopLength={this.changeLoopLength}
+            //
+            title={this.state.title}
+            changeTitle={this.changeTitle}
             //
             setSoundLibrary={this.setSoundLibrary}
             saveAndDownloadState={this.saveAndDownloadState}

@@ -134,6 +134,16 @@ function Controlpad(props) {
       {/* Track selector (future feature). in settings mode, this is file management control module */}
       {props.isSettingsMode ? (
         <div className='controls__module controls__module--large'>
+          <div className='controls__display'>
+            <span className='left'>Song name:</span>
+            <span className='right'>
+              <input
+                className='controls__input'
+                value={props.title}
+                onChange={props.changeTitle}
+              />
+            </span>
+          </div>
           <Button
             className='controls__button'
             onClick={props.saveAndDownloadState}
@@ -210,6 +220,9 @@ Controlpad.propTypes = {
   changeTime: PropTypes.func,
   loopLength: PropTypes.number,
   changeLoopLength: PropTypes.func,
+  //
+  title: PropTypes.string,
+  changeTitle: PropTypes.func,
   //
   setSoundLibrary: PropTypes.func,
   saveAndDownloadState: PropTypes.func,
