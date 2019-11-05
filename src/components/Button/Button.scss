@@ -102,6 +102,7 @@
     }
     &--warning {
       background-color: $warning-color;
+      margin: 15px;
       &:hover {
         background-color: darken($warning-color, 10);
       }

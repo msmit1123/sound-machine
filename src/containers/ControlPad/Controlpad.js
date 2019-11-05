@@ -170,7 +170,10 @@ function Controlpad(props) {
           </Button>
 
           <label htmlFor='file-upload'>
-            <Button className='controls__button' onClick={null}>
+            <Button
+              className='controls__button'
+              onClick={() => console.log('attempting to load file')}
+            >
               <input id='file-upload' type='file' onChange={loadFile} />
               Load
             </Button>
@@ -200,6 +203,7 @@ function Controlpad(props) {
           >
             Demo 2
           </Button>
+          <hr />
           <Button
             className='controls__button controls__button--warning'
             onClick={() => props.setSoundLibrary(false, false, blankSoundLoop)}
