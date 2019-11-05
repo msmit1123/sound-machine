@@ -270,8 +270,8 @@ class App extends React.Component {
     let filename = this.state.title !== '' ? this.state.title : 'new-song';
     fileDownload(JSON.stringify(this.state), filename + '.DSM');
   }
-  importState(file) {
-    this.setState(file);
+  importState(fileContents) {
+    this.setState(JSON.parse(fileContents));
   }
 
   //methods to modify keypad
@@ -408,6 +408,7 @@ class App extends React.Component {
             //
             setSoundLibrary={this.setSoundLibrary}
             saveAndDownloadState={this.saveAndDownloadState}
+            importState={this.importState}
             //
             display={this.state.display}
             //

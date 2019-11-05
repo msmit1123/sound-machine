@@ -32,6 +32,21 @@ import {
 const MAX_LENGTH = 10000;
 
 function Controlpad(props) {
+  function loadFile(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0]; // grab the first file even if user selects multiple
+    const extType = /(\.DSM)$/; //make sure file extension is .DSM
+    if (file.name.match(extType)) {
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        props.importState(reader.result);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('File not supported!');
+    }
+  }
+
   return (
     <div className='controls'>
       {/* display main push button controls */}
@@ -79,7 +94,7 @@ function Controlpad(props) {
       </div>
 
       {/* in settings mode, allow user to change loop length
-          otherwise, display loop length and curretn time */}
+          otherwise, display loop length and current time */}
       <div className='controls__module'>
         <div className='controls__display'>
           <span className='left'>
@@ -131,7 +146,7 @@ function Controlpad(props) {
         <h1>DAS SOUND MACHINE</h1>
       </div>
 
-      {/* Track selector (future feature). in settings mode, this is file management control module */}
+      {/* (possible future track selector feature). in settings mode, this is file management control module */}
       {props.isSettingsMode ? (
         <div className='controls__module controls__module--large'>
           {/* File name display and input */}
@@ -154,15 +169,12 @@ function Controlpad(props) {
             Save
           </Button>
 
-          <Button
-            className='controls__button'
-            onClick={() => console.log('getting file')}
-          >
-            <label for='file-upload'>
-              <input id='file-upload' type='file' label='a' placeholder='b' />
+          <label htmlFor='file-upload'>
+            <Button className='controls__button' onClick={null}>
+              <input id='file-upload' type='file' onChange={loadFile} />
               Load
-            </label>
-          </Button>
+            </Button>
+          </label>
 
           <Button
             className='controls__button'
@@ -239,6 +251,7 @@ Controlpad.propTypes = {
   //
   setSoundLibrary: PropTypes.func,
   saveAndDownloadState: PropTypes.func,
+  importState: PropTypes.func,
   //
   display: PropTypes.string,
   //
