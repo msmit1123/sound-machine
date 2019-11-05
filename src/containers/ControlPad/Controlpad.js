@@ -13,15 +13,43 @@ import {
 import './Controlpad.scss';
 
 import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch.js';
+import Button from '../../components/Button/Button.js';
 import Slider from '../../components/Slider/Slider.js';
 
 import { formatMilliseconds } from '../../helperFunctions.js';
+import {
+  blankSoundLibrary,
+  blankLoopLength,
+  blankSoundLoop,
+  demo1SoundLibrary,
+  demo1LoopLength,
+  demo1SoundLoop,
+  demo2SoundLibrary,
+  demo2LoopLength,
+  demo2SoundLoop
+} from '../../initialSoundLibrary';
 
 const MAX_LENGTH = 10000;
 
 function Controlpad(props) {
+  function loadFile(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0]; // grab the first file even if user selects multiple
+    const extType = /(\.DSM)$/; //make sure file extension is .DSM
+    if (file.name.match(extType)) {
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        props.importState(reader.result);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('File not supported!');
+    }
+  }
+
   return (
     <div className='controls'>
+      {/* display main push button controls */}
       <div className='controls__module'>
         <ToggleSwitch
           id='play'
@@ -64,6 +92,9 @@ function Controlpad(props) {
           </span>
         </ToggleSwitch>
       </div>
+
+      {/* in settings mode, allow user to change loop length
+          otherwise, display loop length and current time */}
       <div className='controls__module'>
         <div className='controls__display'>
           <span className='left'>
@@ -95,6 +126,8 @@ function Controlpad(props) {
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
+
+      {/* volume and display */}
       <div className='controls__module'>
         <div className='controls__display'>{props.display}</div>
         <Slider
@@ -107,9 +140,94 @@ function Controlpad(props) {
           <FontAwesomeIcon icon={faVolumeUp} />
         </Slider>
       </div>
+
+      {/* Machine Label */}
       <div className='controls__module'>
         <h1>DAS SOUND MACHINE</h1>
       </div>
+
+      {/* (possible future track selector feature). in settings mode, this is file management control module */}
+      {props.isSettingsMode ? (
+        <div className='controls__module controls__module--large'>
+          {/* File name display and input */}
+          <div className='controls__display'>
+            <span className='left'>Name this setup:</span>
+            <span className='right'>
+              <input
+                className='controls__input'
+                value={props.title}
+                onChange={props.changeTitle}
+              />
+            </span>
+          </div>
+
+          {/* File management Buttons */}
+          <Button
+            className='controls__button'
+            onClick={props.saveAndDownloadState}
+          >
+            Save
+          </Button>
+
+          <label htmlFor='file-upload'>
+            <Button
+              className='controls__button'
+              onClick={() => console.log('attempting to load file')}
+            >
+              <input id='file-upload' type='file' onChange={loadFile} />
+              Load
+            </Button>
+          </label>
+
+          <Button
+            className='controls__button'
+            onClick={() =>
+              props.setSoundLibrary(
+                demo1LoopLength,
+                demo1SoundLibrary,
+                demo1SoundLoop
+              )
+            }
+          >
+            Demo 1
+          </Button>
+          <Button
+            className='controls__button'
+            onClick={() =>
+              props.setSoundLibrary(
+                demo2LoopLength,
+                demo2SoundLibrary,
+                demo2SoundLoop
+              )
+            }
+          >
+            Demo 2
+          </Button>
+          <hr />
+          <Button
+            className='controls__button controls__button--warning'
+            onClick={() => props.setSoundLibrary(false, false, blankSoundLoop)}
+          >
+            Clear Track
+          </Button>
+          <Button
+            className='controls__button controls__button--warning'
+            onClick={() =>
+              props.setSoundLibrary(
+                blankLoopLength,
+                blankSoundLibrary,
+                blankSoundLoop
+              )
+            }
+          >
+            Clear All
+          </Button>
+        </div>
+      ) : (
+        <div className='controls__module controls__module--large'>
+          {/* Future Track Selector Feature */}
+        </div>
+      )}
     </div>
   );
 }
@@ -131,6 +249,13 @@ Controlpad.propTypes = {
   changeTime: PropTypes.func,
   loopLength: PropTypes.number,
   changeLoopLength: PropTypes.func,
+  //
+  title: PropTypes.string,
+  changeTitle: PropTypes.func,
+  //
+  setSoundLibrary: PropTypes.func,
+  saveAndDownloadState: PropTypes.func,
+  importState: PropTypes.func,
   //
   display: PropTypes.string,
   //

@@ -31,6 +31,13 @@
     @media (min-width: $mobile-break) {
       margin: 5px;
     }
+    &--large {
+      height: fit-content;
+      hr {
+        width: 95%;
+        border: 2px solid lighten($sound-machine-color, 5);
+      }
+    }
   }
 
   &__display,
@@ -63,4 +70,7 @@
     outline: none;
     text-align: right;
   }
+}
+#file-upload {
+  display: none;
 }
