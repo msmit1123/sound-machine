@@ -1,5 +1,8 @@
 @import '../../_variables.scss';
 
+.settings-button {
+}
+
 .keypad {
   &__button {
     $size: 35px;
@@ -80,7 +83,28 @@
       float: left;
     }
     &--warning {
-      background-color: rgba(200, 100, 100, 1);
+      background-color: $warning-color;
+    }
+  }
+}
+
+.controls {
+  &__button {
+    @extend .keypad__button;
+    font-weight: 100;
+    height: 10px;
+    width: 1fr;
+    color: white;
+    background-color: $accessory-color;
+    &:hover {
+      background-color: darken($accessory-color, 10);
+      cursor: pointer;
+    }
+    &--warning {
+      background-color: $warning-color;
+      &:hover {
+        background-color: darken($warning-color, 10);
+      }
     }
   }
 }

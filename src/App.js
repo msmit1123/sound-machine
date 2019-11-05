@@ -343,7 +343,6 @@ class App extends React.Component {
         <div className='sound-machine'>
           <Keypad
             columnArray={this.state.soundLibrary}
-            //playSound={this.playSound}
             handleSoundButtonClick={this.handleSoundButtonClick}
             editButton={this.editButton}
             isSettingsMode={this.state.isSettingsMode}

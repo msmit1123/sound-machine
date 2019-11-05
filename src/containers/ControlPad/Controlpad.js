@@ -13,6 +13,7 @@ import {
 import './Controlpad.scss';
 
 import ToggleSwitch from '../../components/ToggleSwitch/ToggleSwitch.js';
+import Button from '../../components/Button/Button.js';
 import Slider from '../../components/Slider/Slider.js';
 
 import { formatMilliseconds } from '../../helperFunctions.js';
@@ -22,6 +23,7 @@ const MAX_LENGTH = 10000;
 function Controlpad(props) {
   return (
     <div className='controls'>
+      {/* display main push button controls */}
       <div className='controls__module'>
         <ToggleSwitch
           id='play'
@@ -64,6 +66,9 @@ function Controlpad(props) {
           </span>
         </ToggleSwitch>
       </div>
+
+      {/* in settings mode, allow user to change loop length
+          otherwise, display loop length and curretn time */}
       <div className='controls__module'>
         <div className='controls__display'>
           <span className='left'>
@@ -95,6 +100,8 @@ function Controlpad(props) {
           <FontAwesomeIcon icon={faPlay} />
         </Slider>
       </div>
+
+      {/* volume and display */}
       <div className='controls__module'>
         <div className='controls__display'>{props.display}</div>
         <Slider
@@ -107,9 +114,31 @@ function Controlpad(props) {
           <FontAwesomeIcon icon={faVolumeUp} />
         </Slider>
       </div>
-      <div className='controls__module'>
-        <h1>DAS SOUND MACHINE</h1>
-      </div>
+
+      {/* Machine Label + track selector (future). in settings mode, this becomes file management control module */}
+      {props.isSettingsMode ? (
+        <div className='controls__module controls__module--large'>
+          <Button
+            className='controls__button'
+            onClick={() => console.log('clicked')}
+          >
+            Save
+          </Button>
+          <Button className='controls__button'>Load</Button>
+          <Button className='controls__button'>Demo 1</Button>
+          <Button className='controls__button'>Demo 2</Button>
+          <Button className='controls__button controls__button--warning'>
+            Clear Track
+          </Button>
+          <Button className='controls__button controls__button--warning'>
+            Clear All
+          </Button>
+        </div>
+      ) : (
+        <div className='controls__module'>
+          <h1>DAS SOUND MACHINE</h1>
+        </div>
+      )}
     </div>
   );
 }
