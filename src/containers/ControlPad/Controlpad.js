@@ -17,6 +17,17 @@ import Button from '../../components/Button/Button.js';
 import Slider from '../../components/Slider/Slider.js';
 
 import { formatMilliseconds } from '../../helperFunctions.js';
+import {
+  blankSoundLibrary,
+  blankLoopLength,
+  blankSoundLoop,
+  demo1SoundLibrary,
+  demo1LoopLength,
+  demo1SoundLoop,
+  demo2SoundLibrary,
+  demo2LoopLength,
+  demo2SoundLoop
+} from '../../initialSoundLibrary';
 
 const MAX_LENGTH = 10000;
 
@@ -115,28 +126,62 @@ function Controlpad(props) {
         </Slider>
       </div>
 
-      {/* Machine Label + track selector (future). in settings mode, this becomes file management control module */}
+      {/* Machine Label */}
+      <div className='controls__module'>
+        <h1>DAS SOUND MACHINE</h1>
+      </div>
+
+      {/* Track selector (future feature). in settings mode, this is file management control module */}
       {props.isSettingsMode ? (
         <div className='controls__module controls__module--large'>
+          <Button className='controls__button'>Save</Button>
+          <Button className='controls__button'>Load</Button>
           <Button
             className='controls__button'
-            onClick={() => console.log('clicked')}
+            onClick={() =>
+              props.setSoundLibrary(
+                demo1LoopLength,
+                demo1SoundLibrary,
+                demo1SoundLoop
+              )
+            }
           >
-            Save
+            Demo 1
           </Button>
-          <Button className='controls__button'>Load</Button>
-          <Button className='controls__button'>Demo 1</Button>
-          <Button className='controls__button'>Demo 2</Button>
-          <Button className='controls__button controls__button--warning'>
+          <Button
+            className='controls__button'
+            onClick={() =>
+              props.setSoundLibrary(
+                demo2LoopLength,
+                demo2SoundLibrary,
+                demo2SoundLoop
+              )
+            }
+          >
+            Demo 2
+          </Button>
+          <Button
+            className='controls__button controls__button--warning'
+            onClick={() => props.setSoundLibrary(false, false, blankSoundLoop)}
+          >
             Clear Track
           </Button>
-          <Button className='controls__button controls__button--warning'>
+          <Button
+            className='controls__button controls__button--warning'
+            onClick={() =>
+              props.setSoundLibrary(
+                blankLoopLength,
+                blankSoundLibrary,
+                blankSoundLoop
+              )
+            }
+          >
             Clear All
           </Button>
         </div>
       ) : (
-        <div className='controls__module'>
-          <h1>DAS SOUND MACHINE</h1>
+        <div className='controls__module controls__module--large'>
+          {/* Future Track Selector Feature */}
         </div>
       )}
     </div>
@@ -160,6 +205,8 @@ Controlpad.propTypes = {
   changeTime: PropTypes.func,
   loopLength: PropTypes.number,
   changeLoopLength: PropTypes.func,
+  //
+  setSoundLibrary: PropTypes.func,
   //
   display: PropTypes.string,
   //

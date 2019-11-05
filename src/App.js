@@ -8,9 +8,9 @@ import FormOverlay from './components/FormOverlay/FormOverlay.js';
 
 import { deepCopy } from './helperFunctions.js';
 import {
-  initialSoundLibrary,
-  initialLoopLength,
-  initialSoundLoop
+  blankLoopLength,
+  blankSoundLoop,
+  demo1SoundLibrary
 } from './initialSoundLibrary.js';
 
 //declare scoped variables
@@ -32,10 +32,10 @@ class App extends React.Component {
       nowEditingRow: 0,
       display: 'welcome',
       currentVolume: 80,
-      soundLibrary: initialSoundLibrary,
+      soundLibrary: demo1SoundLibrary,
       loopTime: 0,
-      loopLength: initialLoopLength,
-      loop: initialSoundLoop
+      loopLength: blankLoopLength,
+      loop: blankSoundLoop
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -63,6 +63,8 @@ class App extends React.Component {
     this.updateButton = this.updateButton.bind(this);
     this.deleteButton = this.deleteButton.bind(this);
     this.closeEditButtonOverlay = this.closeEditButtonOverlay.bind(this);
+
+    this.setSoundLibrary = this.setSoundLibrary.bind(this);
   }
 
   static getDerivedStateFromError(error) {
@@ -181,6 +183,15 @@ class App extends React.Component {
       const time = parseInt(event.target.value);
       this.setState({ loopTime: time });
     }
+  }
+
+  setSoundLibrary(length, library, loop) {
+    this.setState({
+      soundLibrary: library ? library : this.state.soundLibrary,
+      loopTime: 0,
+      loopLength: length ? length : this.state.loopLength,
+      loop: loop ? loop : this.state.loop
+    });
   }
 
   pauseAllAudio() {
@@ -365,6 +376,8 @@ class App extends React.Component {
             changeTime={this.changeTime}
             loopLength={this.state.loopLength}
             changeLoopLength={this.changeLoopLength}
+            //
+            setSoundLibrary={this.setSoundLibrary}
             //
             display={this.state.display}
             //
