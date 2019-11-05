@@ -196,8 +196,14 @@ class App extends React.Component {
       sounds[i].currentTime = 0;
     }
   }
-  handleSoundButtonClick(event) {
-    const target = event.target;
+  handleSoundButtonClick(event, id) {
+    let target;
+    if (event) {
+      target = event.target;
+    }
+    if (id) {
+      target = id;
+    }
     const column = target.parentNode.getAttribute('column-index');
     const row = target.getAttribute('row-index');
     const clicked = true;
@@ -355,7 +361,7 @@ class App extends React.Component {
       }
 
       if (key !== null) {
-        key.click();
+        this.handleSoundButtonClick(false, key); // is the id of a keypad element
         key.classList.add('keypad__button--active'); //make the button active
       }
     }

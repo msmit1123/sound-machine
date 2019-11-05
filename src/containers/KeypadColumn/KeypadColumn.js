@@ -20,7 +20,7 @@ function KeypadColumn(props) {
             key={'key-' + item.pressKey + '-' + index}
             id={item.pressKey}
             title={item.title}
-            onClick={props.handleSoundButtonClick}
+            onPointerDown={props.handleSoundButtonClick}
             clip-volume={item.volume}
             clip-speed={item.speed}
             row-index={index}
