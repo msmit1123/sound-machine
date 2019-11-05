@@ -1,4 +1,5 @@
 import React from 'react';
+import fileDownload from 'js-file-download';
 
 import './App.scss';
 
@@ -65,6 +66,7 @@ class App extends React.Component {
     this.closeEditButtonOverlay = this.closeEditButtonOverlay.bind(this);
 
     this.setSoundLibrary = this.setSoundLibrary.bind(this);
+    this.saveAndDownloadState = this.saveAndDownloadState.bind(this);
   }
 
   static getDerivedStateFromError(error) {
@@ -90,7 +92,7 @@ class App extends React.Component {
   }
 
   togglePlay() {
-    if (this.state.isOn) {
+    if (this.state.isOn && !this.state.isSettingsMode) {
       if (this.state.isPlaying) {
         this.setState({ isPlaying: false, isRecording: false });
         this.stopPlayingLoop();
@@ -102,7 +104,7 @@ class App extends React.Component {
     }
   }
   toggleRecord() {
-    if (this.state.isOn) {
+    if (this.state.isOn && !this.state.isSettingsMode) {
       if (!this.state.isRecording) {
         this.setState({ isPlaying: true, isRecording: true });
         this.startPlayingLoop();
@@ -192,6 +194,9 @@ class App extends React.Component {
       loopLength: length ? length : this.state.loopLength,
       loop: loop ? loop : this.state.loop
     });
+  }
+  saveAndDownloadState() {
+    fileDownload(JSON.stringify(this.state), 'song.DSM');
   }
 
   pauseAllAudio() {
@@ -378,6 +383,7 @@ class App extends React.Component {
             changeLoopLength={this.changeLoopLength}
             //
             setSoundLibrary={this.setSoundLibrary}
+            saveAndDownloadState={this.saveAndDownloadState}
             //
             display={this.state.display}
             //
