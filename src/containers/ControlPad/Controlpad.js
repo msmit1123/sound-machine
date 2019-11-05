@@ -134,8 +134,9 @@ function Controlpad(props) {
       {/* Track selector (future feature). in settings mode, this is file management control module */}
       {props.isSettingsMode ? (
         <div className='controls__module controls__module--large'>
+          {/* File name display and input */}
           <div className='controls__display'>
-            <span className='left'>Song name:</span>
+            <span className='left'>Name this setup:</span>
             <span className='right'>
               <input
                 className='controls__input'
@@ -144,13 +145,25 @@ function Controlpad(props) {
               />
             </span>
           </div>
+
+          {/* File management Buttons */}
           <Button
             className='controls__button'
             onClick={props.saveAndDownloadState}
           >
             Save
           </Button>
-          <Button className='controls__button'>Load</Button>
+
+          <Button
+            className='controls__button'
+            onClick={() => console.log('getting file')}
+          >
+            <label for='file-upload'>
+              <input id='file-upload' type='file' label='a' placeholder='b' />
+              Load
+            </label>
+          </Button>
+
           <Button
             className='controls__button'
             onClick={() =>
