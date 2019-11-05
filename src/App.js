@@ -135,6 +135,7 @@ class App extends React.Component {
       });
       this.pauseAllAudio();
       this.unlightAllPadButtons();
+      this.stopPlayingLoop();
     }
     if (!this.state.isOn) {
       this.setState({ isOn: true });
