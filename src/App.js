@@ -369,11 +369,15 @@ class App extends React.Component {
     keyPresentlyHeld[event.key] = true;
   }
   handleKeyUp(event) {
-    const key = document.getElementById(event.key);
-    if (key !== null) {
-      key.classList.remove('keypad__button--active'); //make the button active
-    }
-    keyPresentlyHeld[event.key] = false;
+    //make sure both upper and lowercase are turned off in case
+    const keyArr = [event.key.toUpperCase(), event.key.toLowerCase()];
+    keyArr.forEach((item) => {
+      keyPresentlyHeld[item] = false;
+      const itemElement = document.getElementById(item);
+      if (itemElement !== null) {
+        itemElement.classList.remove('keypad__button--active'); //make the button not active
+      }
+    });
   }
 
   render() {
