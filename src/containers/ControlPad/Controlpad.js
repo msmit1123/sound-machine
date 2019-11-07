@@ -97,22 +97,27 @@ function Controlpad(props) {
           otherwise, display loop length and current time */}
       <div className='controls__module'>
         <div className='controls__display'>
-          <span className='left'>
-            {props.isSettingsMode
-              ? 'Set loop length in ms:'
-              : formatMilliseconds(props.loopTime)}
-          </span>
-          {props.isSettingsMode ? '' : <span>/</span>}
-          <span className='right'>
-            {props.isSettingsMode && (
-              <input
-                className='controls__input'
-                value={props.loopLength}
-                onChange={props.changeLoopLength}
-              />
-            )}
-            {!props.isSettingsMode && formatMilliseconds(props.loopLength)}
-          </span>
+          {props.isOn && (
+            <span className='left'>
+              {props.isSettingsMode
+                ? 'Set loop length in ms:'
+                : formatMilliseconds(props.loopTime)}
+            </span>
+          )}
+          {props.isOn && (props.isSettingsMode ? '' : <span>/</span>)}
+
+          {props.isOn && (
+            <span className='right'>
+              {props.isSettingsMode && (
+                <input
+                  className='controls__input'
+                  value={props.loopLength}
+                  onChange={props.changeLoopLength}
+                />
+              )}
+              {!props.isSettingsMode && formatMilliseconds(props.loopLength)}
+            </span>
+          )}
         </div>
         <Slider
           id='play-slider'
