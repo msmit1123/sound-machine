@@ -208,6 +208,7 @@ class App extends React.Component {
     const row = target.getAttribute('row-index');
     const clicked = true;
     this.playSound(column, row, clicked);
+    //if recording, save to loop library
     if (this.state.isRecording) {
       const loopCopy = deepCopy(this.state.loop);
       loopCopy.push({
@@ -215,7 +216,8 @@ class App extends React.Component {
         column: column,
         row: row
       });
-      this.setState({ loop: loopCopy });
+      //delay updating the loop libary by the timing record interval so that it doesnt play the note you just recorded
+      setTimeout(() => this.setState({ loop: loopCopy }), LOOP_TIMING_FIDELITY);
     }
   }
   playSound(columnNum, rowNum, clicked) {
