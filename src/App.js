@@ -354,8 +354,17 @@ class App extends React.Component {
 
   //set up keyboard binding
   handleKeyDown(event) {
+    const key = document.getElementById(event.key);
+    //handle spacebar
+    if (event.key === ' ') {
+      event.preventDefault();
+      if (!this.state.isSettingsMode) {
+        this.togglePlay();
+      }
+    }
+
+    //handle everything else
     if (this.state.isOn && !this.state.isSettingsMode) {
-      const key = document.getElementById(event.key);
       if (keyPresentlyHeld[event.key]) {
         return;
       }
