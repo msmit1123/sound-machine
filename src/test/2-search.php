@@ -4,9 +4,9 @@
 // if (isset($_SESSION['admin'])) { ... DO SEARCH AS BELOW ... }
 
 // (1) CONNECT TO DATABASE
-$host = 'localhost:3306';
-$dbname = 'test1';
-$user = 'testUser';
+$host = 'localhost';
+$dbname = 'sunddpxk_test1';
+$user = 'sunddpxk_testUser';
 $password = 'testPassword';
 $charset = 'utf8';
 $pdo = new PDO(
@@ -18,7 +18,6 @@ $pdo = new PDO(
 );
 
 // (2) SEARCHING FOR?
-$data = [];
 switch ($_POST['type']) {
   // (2A) INVALID SEARCH TYPE
   default :
@@ -28,7 +27,7 @@ switch ($_POST['type']) {
   case "user":
     // You might want to limit number of results on massive databases
     // SELECT * FROM XYZ WHERE `FIELD` LIKE ? LIMIT 20
-    $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `name` LIKE ?");
+    $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `name` LIKE ? LIMIT 5");
     $stmt->execute(["%" . $_POST['term'] . "%"]);
     while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
       $data[] = $row['name'];
@@ -77,6 +76,7 @@ switch ($_POST['type']) {
     }
     break;
 }
+
 
 // (3) RETURN RESULT
 $pdo = null;
