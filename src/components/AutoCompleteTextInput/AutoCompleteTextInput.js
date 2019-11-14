@@ -125,7 +125,7 @@ class AutoCompleteTextInput extends React.Component {
           type='text'
           onChange={this.onChange}
           onKeyDown={this.onKeyDown}
-          value={this.userInput}
+          value={this.state.userInput}
           {...props}
         />
         {/* <input type='submit' value='' className='search-btn' /> */}
