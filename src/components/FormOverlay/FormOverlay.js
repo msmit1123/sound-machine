@@ -6,6 +6,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import './FormOverlay.scss';
 
 import Button from '../Button/Button.js';
+import AutoCompleteTextInput from '../AutoCompleteTextInput/AutoCompleteTextInput';
 
 class FormOverlay extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class FormOverlay extends React.Component {
       volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
       speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
+    this.handleChangeFor = this.handleChangeFor.bind(this);
   }
 
   handleChangeFor = (propertyName) => (event) => {
@@ -45,11 +47,16 @@ class FormOverlay extends React.Component {
           />
           <hr />
           Clip Title:{' '}
-          <input
+          <AutoCompleteTextInput
+            id='clip-title'
             className='form__input'
-            type='text'
             value={this.state.title}
             onChange={this.handleChangeFor('title')}
+            //pass in an API / autocomplete library to reference
+            //optionally a static list of options in lieu of API
+            //optionally pass in max number of desired results
+            //optionally pass in the number of characters before it starts outputting suggestions
+            //optionally tell it to only query this one or link a series of queries together
           />
           <hr />
           URL:{' '}
