@@ -50,7 +50,8 @@ class FormOverlay extends React.Component {
           <AutoCompleteTextInput
             id='clip-title'
             className='autocomplete__input'
-            staticList={['a', 'b', 'apple', 'babbooon']}
+            placeholder='Name of sound'
+            staticList={['a', 'b', 'apple', 'babb ooon']}
             //value={this.state.title}
             //onChange={this.handleChangeFor('title')}
             //pass in an API / autocomplete library to reference

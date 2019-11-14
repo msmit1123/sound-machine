@@ -67,29 +67,33 @@ class AutoCompleteTextInput extends React.Component {
         isShowingSuggestions: false,
         userInput: filteredSuggestions[currentSuggestion]
       });
+    }
 
-      //Up arrow pressed
-    } else if (event.keyCode === 38) {
+    //Up arrow pressed
+    else if (event.keyCode === 38) {
       if (currentSuggestion === 0) {
         return;
       }
       this.setState({ currentSuggestion: currentSuggestion - 1 });
+    }
 
-      //Down arrow pressed
-    } else if (event.keyCode === 40) {
+    //Down arrow pressed
+    else if (event.keyCode === 40) {
       if (currentSuggestion === filteredSuggestions.length - 1) {
         return; //if at the bottom of the list, return
       }
       this.setState({ currentSuggestion: currentSuggestion + 1 });
+    }
 
-      //Escape pressed
-    } else if (event.keyCode === 27) {
+    //Escape pressed
+    else if (event.keyCode === 27) {
       this.setState({ isShowingSuggestions: false });
     }
   };
 
   render() {
     let optionList;
+    const { staticList, APIList, ...props } = this.props; //intentionally strip lists from props
     if (this.state.isShowingSuggestions && this.state.userInput) {
       if (this.state.filteredSuggestions.length) {
         optionList = (
@@ -122,7 +126,7 @@ class AutoCompleteTextInput extends React.Component {
           onChange={this.onChange}
           onKeyDown={this.onKeyDown}
           value={this.userInput}
-          {...this.props}
+          {...props}
         />
         {/* <input type='submit' value='' className='search-btn' /> */}
         {optionList}
