@@ -7,6 +7,8 @@ class AutoCompleteTextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      staticList: this.props.staticList,
+      APIList: this.props.APIList,
       currentSuggestion: 0,
       filteredSuggestions: [],
       isShowingSuggestions: false,
@@ -15,16 +17,21 @@ class AutoCompleteTextInput extends React.Component {
   }
 
   onChange = (event) => {
-    const options = ['a', 'b', 'apple', 'babbooon'];
-    /**
-     * **************************************************************************
-     * depending on props, use props supplied list or props API Input here
-     */
+    let suggestionsList;
+
+    //if a static list is provided via props, set the suggestions list to that
+    if (this.state.staticList) {
+      suggestionsList = this.state.staticList;
+    }
+
+    //if an API for where to check lists is provided via props, use that instead
+    //if(this.state.APIList){suggestionsList = this.state.APIList}
+
     const userInput = event.currentTarget.value;
 
-    const filteredSuggestions = options.filter(
-      (optionName) =>
-        optionName.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+    //client side rendering for static list:
+    const filteredSuggestions = suggestionsList.filter(
+      (item) => item.toLowerCase().indexOf(userInput.toLowerCase()) > -1
     );
 
     this.setState({
@@ -43,6 +50,13 @@ class AutoCompleteTextInput extends React.Component {
       userInput: event.currentTarget.innerText
     });
   };
+
+  onMouseEnter = (event) => {
+    this.setState({
+      currentSuggestion: parseInt(event.currentTarget.getAttribute('index'))
+    });
+  };
+
   onKeyDown = (event) => {
     const { currentSuggestion, filteredSuggestions } = this.state;
 
@@ -75,58 +89,44 @@ class AutoCompleteTextInput extends React.Component {
   };
 
   render() {
-    const {
-      onChange,
-      onClick,
-      onKeyDown,
-
-      state: {
-        currentSuggestion,
-        filteredSuggestions,
-        isShowingSuggestions,
-        userInput
-      }
-    } = this;
     let optionList;
-    if (isShowingSuggestions && userInput) {
-      if (filteredSuggestions.length) {
+    if (this.state.isShowingSuggestions && this.state.userInput) {
+      if (this.state.filteredSuggestions.length) {
         optionList = (
-          <ul className='options'>
-            {filteredSuggestions.map((optionName, index) => {
-              let className;
-              if (index === currentSuggestion) {
-                className = 'option-active';
+          <ul className='autocomplete__suggestions-list'>
+            {this.state.filteredSuggestions.map((item, index) => {
+              let className = 'autocomplete__suggestion-item';
+              if (index === this.state.currentSuggestion) {
+                className += ' autocomplete__suggestion-item--active';
               }
               return (
-                <li className={className} key={optionName} onClick={onClick}>
-                  {optionName}
+                <li
+                  className={className}
+                  key={item}
+                  index={index}
+                  onClick={this.onClick}
+                  onMouseEnter={this.onMouseEnter}
+                >
+                  {item}
                 </li>
               );
             })}
           </ul>
         );
-      } else {
-        optionList = (
-          <div className='no-options'>
-            <em>No Option!</em>
-          </div>
-        );
       }
     }
     return (
-      <React.Fragment>
-        <div className='search'>
-          <input
-            type='text'
-            className='form__input'
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            value={userInput}
-          />
-          {/* <input type='submit' value='' className='search-btn' /> */}
-        </div>
+      <div className='autocomplete__container'>
+        <input
+          type='text'
+          onChange={this.onChange}
+          onKeyDown={this.onKeyDown}
+          value={this.userInput}
+          {...this.props}
+        />
+        {/* <input type='submit' value='' className='search-btn' /> */}
         {optionList}
-      </React.Fragment>
+      </div>
     );
   }
 }
