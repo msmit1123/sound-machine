@@ -22,11 +22,16 @@ class FormOverlay extends React.Component {
       volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
       speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
+    this.handleEventChangeFor = this.handleEventChangeFor.bind(this);
     this.handleChangeFor = this.handleChangeFor.bind(this);
   }
 
-  handleChangeFor = (propertyName) => (event) => {
-    this.setState({ [propertyName]: event.target.value });
+  handleEventChangeFor = (propertyName) => (event) => {
+    this.handleChangeFor(propertyName)(event.target.value);
+  };
+
+  handleChangeFor = (propertyName) => (str) => {
+    this.setState({ [propertyName]: str });
   };
 
   render() {
@@ -43,7 +48,7 @@ class FormOverlay extends React.Component {
             type='text'
             maxLength='1'
             value={this.state.pressKey}
-            onChange={this.handleChangeFor('pressKey')}
+            onChange={this.handleEventChangeFor('pressKey')}
           />
           <hr />
           Clip Title:{' '}
@@ -52,8 +57,8 @@ class FormOverlay extends React.Component {
             className='autocomplete__input'
             placeholder='Name of sound'
             staticList={['a', 'b', 'apple', 'babb ooon']}
-            //value={this.state.title}
-            //onChange={this.handleChangeFor('title')}
+            value={this.state.title}
+            handleChange={this.handleChangeFor('title')}
             //pass in an API / autocomplete library to reference
             //optionally a static list of options in lieu of API
             //optionally pass in max number of desired results
@@ -66,7 +71,7 @@ class FormOverlay extends React.Component {
             className='form__input'
             type='text'
             value={this.state.url}
-            onChange={this.handleChangeFor('url')}
+            onChange={this.handleEventChangeFor('url')}
           />
           <hr />
           Volume: {this.state.volume}
@@ -76,7 +81,7 @@ class FormOverlay extends React.Component {
             min='0'
             max='100'
             value={this.state.volume}
-            onChange={this.handleChangeFor('volume')}
+            onChange={this.handleEventChangeFor('volume')}
           />
           <hr />
           Playback Speed: {this.state.speed / 100 + 'x'}
@@ -86,7 +91,7 @@ class FormOverlay extends React.Component {
             min='25'
             max='400'
             value={this.state.speed}
-            onChange={this.handleChangeFor('speed')}
+            onChange={this.handleEventChangeFor('speed')}
           />
           <hr />
           <div>

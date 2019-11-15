@@ -12,13 +12,15 @@ class AutoCompleteTextInput extends React.Component {
       currentSuggestion: 0,
       filteredSuggestions: [],
       isShowingSuggestions: false,
-      userInput: ''
+      userInput: this.props.value
     };
   }
 
   onChange = (event) => {
+    //create a suggestions list with correct scope
     let suggestionsList;
 
+    //populate suggestions list:
     //if a static list is provided via props, set the suggestions list to that
     if (this.state.staticList) {
       suggestionsList = this.state.staticList;
@@ -27,6 +29,7 @@ class AutoCompleteTextInput extends React.Component {
     //if an API for where to check lists is provided via props, use that instead
     //if(this.state.APIList){suggestionsList = this.state.APIList}
 
+    //update source of truth in FormOverlay Component
     const userInput = event.currentTarget.value;
 
     //client side rendering for static list:
@@ -36,19 +39,27 @@ class AutoCompleteTextInput extends React.Component {
 
     this.setState({
       currentSuggestion: 0,
-      filteredSuggestions,
+      filteredSuggestions: filteredSuggestions,
       isShowingSuggestions: true,
-      userInput: event.currentTarget.value
+      userInput: userInput
     });
+
+    // do this after setting state because the delay react takes to update the state
+    this.props.handleChange(userInput);
   };
 
   onClick = (event) => {
+    const selection = event.currentTarget.innerText;
+
     this.setState({
       currentSuggestion: 0,
       filteredSuggestions: [],
       isShowingSuggestions: false,
-      userInput: event.currentTarget.innerText
+      userInput: selection
     });
+
+    // do this after setting state because the delay react takes to update the state
+    this.props.handleChange(selection);
   };
 
   onMouseEnter = (event) => {
@@ -62,10 +73,11 @@ class AutoCompleteTextInput extends React.Component {
 
     //enter pressed
     if (event.keyCode === 13) {
+      this.props.handleChange(filteredSuggestions[currentSuggestion]);
       this.setState({
         currentSuggestion: 0,
         isShowingSuggestions: false,
-        userInput: filteredSuggestions[currentSuggestion]
+        userInput: this.props.value
       });
     }
 
@@ -89,11 +101,16 @@ class AutoCompleteTextInput extends React.Component {
     else if (event.keyCode === 27) {
       this.setState({ isShowingSuggestions: false });
     }
+
+    //Spacebar pressed
+    else if (event.keyCode === 38) {
+      //insert space into input
+    }
   };
 
   render() {
     let optionList;
-    const { staticList, APIList, ...props } = this.props; //intentionally strip lists from props
+    const { staticList, APIList, handleChange, ...props } = this.props; //intentionally strip these from props
     if (this.state.isShowingSuggestions && this.state.userInput) {
       if (this.state.filteredSuggestions.length) {
         optionList = (
