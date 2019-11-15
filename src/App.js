@@ -359,8 +359,8 @@ class App extends React.Component {
     const key = document.getElementById(event.key);
     //handle spacebar
     if (event.key === ' ') {
-      event.preventDefault();
       if (!this.state.isSettingsMode) {
+        event.preventDefault();
         this.togglePlay();
       }
     }

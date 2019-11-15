@@ -101,11 +101,6 @@ class AutoCompleteTextInput extends React.Component {
     else if (event.keyCode === 27) {
       this.setState({ isShowingSuggestions: false });
     }
-
-    //Spacebar pressed
-    else if (event.keyCode === 38) {
-      //insert space into input
-    }
   };
 
   render() {
@@ -145,7 +140,6 @@ class AutoCompleteTextInput extends React.Component {
           value={this.state.userInput}
           {...props}
         />
-        {/* <input type='submit' value='' className='search-btn' /> */}
         {optionList}
       </div>
     );
