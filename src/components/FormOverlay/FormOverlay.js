@@ -57,6 +57,7 @@ class FormOverlay extends React.Component {
             className='autocomplete__input'
             placeholder='Name of sound'
             staticList={['a', 'b', 'apple', 'babb ooon']}
+            APIList={['c', 'car', 'cash', 'caboose', 'dog']}
             value={this.state.title}
             handleChange={this.handleChangeFor('title')}
             //pass in an API / autocomplete library to reference

@@ -7,12 +7,15 @@ class AutoCompleteTextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      staticList: this.props.staticList,
-      APIList: this.props.APIList,
-      currentSuggestion: 0,
+      currentSuggestion: 0, // current highlighted suggestion
       filteredSuggestions: [],
       isShowingSuggestions: false,
       userInput: this.props.value
+      /* load in a starting value if any
+       * userInput here reperesents the visible value in the controlled input field
+       * the parent component must pass in a function as a prop to update whatever
+       * it is doing with this value.
+       */
     };
   }
 
@@ -20,14 +23,15 @@ class AutoCompleteTextInput extends React.Component {
     //create a suggestions list with correct scope
     let suggestionsList;
 
-    //populate suggestions list:
-    //if a static list is provided via props, set the suggestions list to that
-    if (this.state.staticList) {
-      suggestionsList = this.state.staticList;
+    //(1) populate suggestions list:
+    //(1A)if an API for where to check lists is provided via props, use that instead
+    if (this.props.APIList) {
+      suggestionsList = this.props.APIList;
     }
-
-    //if an API for where to check lists is provided via props, use that instead
-    //if(this.state.APIList){suggestionsList = this.state.APIList}
+    //(1B) if an API is not provided and a  static list is provided via props, set the suggestions list to that
+    else if (this.props.staticList) {
+      suggestionsList = this.props.staticList;
+    }
 
     //update source of truth in FormOverlay Component
     const userInput = event.currentTarget.value;
@@ -41,10 +45,9 @@ class AutoCompleteTextInput extends React.Component {
       currentSuggestion: 0,
       filteredSuggestions: filteredSuggestions,
       isShowingSuggestions: true,
-      userInput: userInput
+      userInput: userInput //update the controlled input in this component
     });
-
-    // do this after setting state because the delay react takes to update the state
+    // update the parent component with new info
     this.props.handleChange(userInput);
   };
 
@@ -55,10 +58,9 @@ class AutoCompleteTextInput extends React.Component {
       currentSuggestion: 0,
       filteredSuggestions: [],
       isShowingSuggestions: false,
-      userInput: selection
+      userInput: selection //update the controlled input in this component
     });
-
-    // do this after setting state because the delay react takes to update the state
+    // update the parent component with new info
     this.props.handleChange(selection);
   };
 
@@ -73,12 +75,14 @@ class AutoCompleteTextInput extends React.Component {
 
     //enter pressed
     if (event.keyCode === 13) {
-      this.props.handleChange(filteredSuggestions[currentSuggestion]);
+      const selection = filteredSuggestions[currentSuggestion];
       this.setState({
         currentSuggestion: 0,
         isShowingSuggestions: false,
-        userInput: this.props.value
+        userInput: selection //update the controlled input in this component
       });
+      // update the parent component with new info
+      this.props.handleChange(selection);
     }
 
     //Up arrow pressed
