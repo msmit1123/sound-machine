@@ -29,33 +29,10 @@
     &--active {
       background-color: $accessory-color;
       font-weight: 600;
+      cursor: pointer;
     }
   }
   &__no-suggestions {
     color: $accessory-color;
   }
-}
-
-//
-//
-//
-//
-//
-// from the 3 step thing
-.acWrap {
-  position: relative;
-}
-.acBox {
-  position: absolute;
-  top: 25px;
-  left: 0;
-  padding: 5px;
-  z-index: 999;
-  background: #fff;
-  border: 1px solid #000;
-  display: none;
-}
-.acBox:hover {
-  cursor: pointer;
-  background: #fea;
 }
