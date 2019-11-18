@@ -44,58 +44,19 @@ class AutoCompleteTextInput extends React.Component {
 
     //(1) populate suggestions list:
     //(1A)if an API for where to check lists is provided via props, use that
-    if (this.props.API.isUsingAPI) {
-      //this.props.API.listURL;
-      //this.props.API.function;
-      //this.props.API.searchTerms;
-      //this.props.API.callbackFunction;
-    }
-    if (this.props.APIList) {
-      //suggestionsList = this.props.APIList;
-      const req = new XMLHttpRequest();
+    if (this.props.API.isUsing) {
+      //run the search sending userInput
+      let { requestFunction, requestURL, requestData } = this.props.API;
+      requestData['term'] = userInput; //add userInput as search term to the request object.
 
-      //build a data request
-      var data = new FormData();
-      data.append('type', 'name'); //name returns an array of the names or name-all to get the whole row
-      data.append('term', userInput); //search term
-      // set up these options for the API request
-      // input: document.getElementById(opt.target),
-      // wrap: document.getElementById('acWrap' + id),
-      // box: document.getElementById('acBox' + id),
-      // delay: opt.delay ? opt.delay : 500,
-      // url: opt.url,
-      // min: opt.min ? opt.min : 2,
-      // data: opt.data ? opt.data : null,
-      // fetch: opt.fetch ? opt.fetch : null,
-      // select: opt.select ? opt.select : null,
-      // timer: null
-      // data.append('term', suggest.instance[id].input.value);
-      // if (suggest.instance[id].data) {
-      //   for (let key in suggest.instance[id].data) {
-      //     data.append(key, suggest.instance[id].data[key]);
-      //   }
-      // }
+      const response = requestFunction(requestURL, requestData); // should return an array
+      suggestionsList = response; //the returned array of suggestions from the API
 
-      req.open(
-        'POST',
-        'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php'
-      );
-      req.send(data);
+      if (Array.isArray(suggestionsList)) {
+        this.filterSuggestions(suggestionsList, userInput);
+      }
 
-      //what to do when a response is received
-      req.onload = () => {
-        if (req.status !== 200) {
-          // if there is an error response
-          console.log(`Error ${req.status}: ${req.statusText}`);
-        } else {
-          // show the result
-          let suggestionsList;
-          suggestionsList = JSON.parse(req.response);
-          if (Array.isArray(suggestionsList)) {
-            this.filterSuggestions(suggestionsList, userInput);
-          }
-        }
-      };
+      //also do the callback in this.props.API?
     }
 
     //(1B) if an API is not provided and a static list is provided via props, set the suggestions list to that

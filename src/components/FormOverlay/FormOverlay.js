@@ -2,7 +2,10 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import AutoCompleteInterface from './AutoCompleteInterface.js';
+import {
+  autoCompleteInterface,
+  selectionCallback
+} from '../../components/AutoCompleteTextInput/AutoCompleteInterface.js';
 
 import './FormOverlay.scss';
 
@@ -57,8 +60,15 @@ class FormOverlay extends React.Component {
             id='clip-title'
             className='autocomplete__input'
             placeholder='Name of sound'
-            staticList={['a', 'b', 'apple', 'babb ooon']}
-            APIList={true}
+            staticList={['a', 'b', 'apple', 'babb ooon']} //dummy static list provided as proof of concept / fallback option
+            API={{
+              isUsing: true, //confirm we want to use the API in this form
+              requestFunction: autoCompleteInterface,
+              requestURL:
+                'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
+              requestData: { type: 'name' },
+              onSelectionCallback: '' //this is where I tell it what to do on selection...
+            }}
             value={this.state.title}
             handleChange={this.handleChangeFor('title')}
             //pass in an API / autocomplete library to reference
