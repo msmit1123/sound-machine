@@ -49,12 +49,13 @@ class AutoCompleteTextInput extends React.Component {
       let { requestFunction, requestURL, requestData } = this.props.API;
       requestData['term'] = userInput; //add userInput as search term to the request object.
 
-      const response = requestFunction(requestURL, requestData); // should return an array
-      suggestionsList = response; //the returned array of suggestions from the API
-
-      if (Array.isArray(suggestionsList)) {
-        this.filterSuggestions(suggestionsList, userInput);
-      }
+      requestFunction(requestURL, requestData) // should return a string in JSON format
+        .then((response) => {
+          suggestionsList = JSON.parse(response); //the returned array of suggestions from the API
+          if (Array.isArray(suggestionsList)) {
+            this.filterSuggestions(suggestionsList, userInput);
+          }
+        });
 
       //also do the callback in this.props.API?
     }
