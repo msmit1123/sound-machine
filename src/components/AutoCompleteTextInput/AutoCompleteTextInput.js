@@ -11,12 +11,16 @@ class AutoCompleteTextInput extends React.Component {
       filteredSuggestions: [],
       isShowingSuggestions: false,
       userInput: this.props.value // see code re-useability note below
-      /**
+      /** CODE RE-USEABLILTY NOTE:
        * load in a starting value if any is set via props
        * userInput here reperesents the visible value in the controlled input field
-       * this is the single source of truth for this component. As this component could
-       * exist by itself or within the context of a larget application. If it is part of
-       * a larger application and you want to do
+       * this is the single source of truth for this component.
+       *
+       * As this component could exist by itself or within the context of a larger application,
+       * this is intentional becuase the parent component may or may not want to use this info,
+       * so I am choosing to keep the state here local.
+       *
+       * If it is part of a larger application and you want to do
        * something with/from  the parent component, the parent component must pass in a
        * function as a prop to update whatever it is doing with this value.
        */
@@ -31,7 +35,7 @@ class AutoCompleteTextInput extends React.Component {
       isShowingSuggestions: false,
       userInput: userInput //update the controlled input in this component
     });
-    // update the parent component with new info
+    // update the parent component with new info.
     this.props.handleChange(userInput);
 
     // update the selection list with the new info
@@ -46,16 +50,40 @@ class AutoCompleteTextInput extends React.Component {
     //(1A)if an API for where to check lists is provided via props, use that
     if (this.props.API.isUsing) {
       //run the search sending userInput
-      let { requestFunction, requestURL, requestData } = this.props.API;
+      let {
+        requestFunction,
+        requestURL,
+        requestData,
+        requestOptions
+      } = this.props.API;
       requestData['term'] = userInput; //add userInput as search term to the request object.
 
-      requestFunction(requestURL, requestData) // should return a string in JSON format
-        .then((response) => {
-          suggestionsList = JSON.parse(response); //the returned array of suggestions from the API
+      /* the request function should resolve itself and return an array with the following structure:
+        [
+          {id:12, name: 'suggestion 1'},
+          {id:14, name: 'suggestion 2'},
+          {id:22, name: 'suggestion 3'},
+          etc
+        ]
+
+        on hover or arrow up down over,
+        A second call to the API should request the id and be returned with the entire entry
+        {id:12, name: 'suggestion 1', link: 'http...'}
+        and store it in the state.
+
+        on click or press enter,
+        the value from the state should be passed into the callback function to populate the rest of the form appropriately
+       */
+
+      requestFunction(requestURL, requestData, requestOptions).then(
+        (response) => {
+          suggestionsList = response; //set the suggestions list to the returned array of suggestions from the API
           if (Array.isArray(suggestionsList)) {
+            // confirm it is in fact an array, then
             this.filterSuggestions(suggestionsList, userInput);
           }
-        });
+        }
+      );
 
       //also do the callback in this.props.API?
     }

@@ -63,7 +63,7 @@ class FormOverlay extends React.Component {
             staticList={['a', 'b', 'apple', 'babb ooon']} //dummy static list provided as proof of concept / fallback option
             API={{
               isUsing: true, //confirm we want to use the API in this form
-              requestFunction: autoCompleteInterface,
+              requestFunction: autoCompleteInterface.handleRequest,
               requestURL:
                 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
               requestData: { type: 'name' },

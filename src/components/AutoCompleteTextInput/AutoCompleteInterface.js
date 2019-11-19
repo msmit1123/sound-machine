@@ -1,111 +1,55 @@
-async function autoCompleteInterface(urlToAPI, requestDataObj) {
-  //build data into the request
-  const data = new FormData();
-  for (let key in requestDataObj) {
-    data.append(key, requestDataObj[key]);
+const autoCompleteInterface = {
+  fetchResponse: (urlToAPI, requestDataObj, delay) => {
+    //build data into the request
+    const data = new FormData();
+    for (let key in requestDataObj) {
+      data.append(key, requestDataObj[key]);
+    }
+    /**
+     * API NOTES for:
+     * 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php'
+     * available options the api will accept:
+     */
+
+    let promise = new Promise((resolve, reject) => {
+      //set up a new AJAX request
+      const req = new XMLHttpRequest();
+      req.open('POST', urlToAPI);
+
+      //define a function of what to do when a response is received error or complete
+      req.onerror = () =>
+        reject(console.log(`Error ${req.status}: ${req.statusText}`)); // on error, log
+
+      req.onload = () => resolve(JSON.parse(req.response)); // on success parse and return the response
+
+      req.send(data);
+    });
+
+    return promise;
+  },
+
+  handleRequest: (
+    urlToAPI, // url to API
+    requestDataObj, // Data to be sent to server
+    requestOptions // options handled client side
+  ) => {
+    // create a client side options object to either populate with specified request options or defaults
+    let options = requestOptions ? requestOptions : {};
+    options.timer = null;
+    options.minChars = options.minChars ? options.minChars : 1; //set the minimum number of characters required to trigger a call
+    options.delay = options.delay ? options.delay : 500; //set the delay between calls so it doesn't spam the server
+
+    //if a timer was already running, clear it
+    if (options.timer !== null) {
+      window.clearTimeout(options.timer);
+    }
+
+    //start a new timer in case user is typing, server doesnt get spammed with requests.
+    //options.timer =
+    return autoCompleteInterface.fetchResponse(urlToAPI, requestDataObj);
   }
-  /**
-    available options the php api will accept:
-    type: sets the type
-    -name: will return an array of the name column
-    -name-all: will return an object of each row as an object
+};
 
-    term: sets search term
+function onSelectionCallback() {}
 
-    input: document.getElementById(opt.target),
-    wrap: document.getElementById('acWrap' + id),
-    box: document.getElementById('acBox' + id),
-
-    delay: opt.delay ? opt.delay : 500,
-    url: opt.url,
-    min: opt.min ? opt.min : 2,
-    data: opt.data ? opt.data : null,
-    fetch: opt.fetch ? opt.fetch : null,
-    select: opt.select ? opt.select : null,
-    timer: null
-    data.append('term', suggest.instance[id].input.value);
-    if (suggest.instance[id].data) {
-      for (let key in suggest.instance[id].data) {
-        data.append(key, suggest.instance[id].data[key]);
-      }
-    }
-  */
-
-  // return a promise
-  return new Promise((resolve, reject) => {
-    //set up a new AJAX request
-    const req = new XMLHttpRequest();
-    req.open('POST', urlToAPI);
-
-    //define a function of what to do when a response is received error or complete
-    req.onerror = () =>
-      reject(console.log(`Error ${req.status}: ${req.statusText}`)); // on error, log
-
-    req.onload = () => resolve(req.response); // on success return the response
-
-    req.send(data);
-  });
-}
-
-function selectionCallback() {}
-
-export { autoCompleteInterface, selectionCallback };
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/*
-if (this.props.APIList) {
-  //suggestionsList = this.props.APIList;
-  const req = new XMLHttpRequest();
-
-  //build a data request
-  var data = new FormData();
-  data.append('type', 'name'); //name returns an array of the names or name-all to get the whole row
-  data.append('term', userInput); //search term
-  // set up these options for the API request
-  // input: document.getElementById(opt.target),
-  // wrap: document.getElementById('acWrap' + id),
-  // box: document.getElementById('acBox' + id),
-  // delay: opt.delay ? opt.delay : 500,
-  // url: opt.url,
-  // min: opt.min ? opt.min : 2,
-  // data: opt.data ? opt.data : null,
-  // fetch: opt.fetch ? opt.fetch : null,
-  // select: opt.select ? opt.select : null,
-  // timer: null
-  // data.append('term', suggest.instance[id].input.value);
-  // if (suggest.instance[id].data) {
-  //   for (let key in suggest.instance[id].data) {
-  //     data.append(key, suggest.instance[id].data[key]);
-  //   }
-  // }
-
-  req.open(
-    'POST',
-    'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php'
-  );
-  req.send(data);
-
-  //what to do when a response is received
-  req.onload = () => {
-    if (req.status !== 200) {
-      // if there is an error response
-      console.log(`Error ${req.status}: ${req.statusText}`);
-    } else {
-      // show the result
-      let suggestionsList;
-      suggestionsList = JSON.parse(req.response);
-      if (Array.isArray(suggestionsList)) {
-        this.filterSuggestions(suggestionsList, userInput);
-      }
-    }
-  };
-}
-*/
+export { autoCompleteInterface, onSelectionCallback };
