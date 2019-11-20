@@ -67,6 +67,7 @@ class FormOverlay extends React.Component {
               requestURL:
                 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
               requestData: { type: 'name' },
+              //requestOptions: {},
               onSelectionCallback: '' //this is where I tell it what to do on selection...
             }}
             value={this.state.title}

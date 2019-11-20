@@ -1,5 +1,5 @@
 const autoCompleteInterface = {
-  fetchResponse: (urlToAPI, requestDataObj, delay) => {
+  fetchData: (urlToAPI, requestDataObj) => {
     //build data into the request
     const data = new FormData();
     for (let key in requestDataObj) {
@@ -28,27 +28,37 @@ const autoCompleteInterface = {
     return promise;
   },
 
-  handleRequest: (
+  handleRequest: async (
     urlToAPI, // url to API
     requestDataObj, // Data to be sent to server
     requestOptions // options handled client side
   ) => {
     // create a client side options object to either populate with specified request options or defaults
     let options = requestOptions ? requestOptions : {};
-    options.timer = null;
     options.minChars = options.minChars ? options.minChars : 1; //set the minimum number of characters required to trigger a call
     options.delay = options.delay ? options.delay : 500; //set the delay between calls so it doesn't spam the server
+    options.timerLoc = options.timerLoc ? options.timerLoc : window; //set a location to attach the timer to. Ideally the input being autofilled is passed in. as a fallback, attach to the window.
 
     //if a timer was already running, clear it
-    if (options.timer !== null) {
-      window.clearTimeout(options.timer);
+    if (options.timerLoc.timer !== null) {
+      clearTimeout(options.timerLoc.timer);
     }
 
-    //start a new timer in case user is typing, server doesnt get spammed with requests.
-    //options.timer =
-    return autoCompleteInterface.fetchResponse(urlToAPI, requestDataObj);
+    //start a new client side timer in case user is typing, server doesn't get spammed with requests until user stops typing.
+    options.timerLoc.timer = setTimeout(() => {
+      alert('a');
+      return autoCompleteInterface.fetchData(urlToAPI, requestDataObj);
+    }, options.delay);
   }
 };
+
+function delay(fn, ms) {
+  let timer = 0;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(fn.bind(this, ...args), ms || 0);
+  };
+}
 
 function onSelectionCallback() {}
 

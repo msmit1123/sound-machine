@@ -42,13 +42,13 @@ class AutoCompleteTextInput extends React.Component {
     this.handleSelectionList(userInput);
   };
 
-  handleSelectionList = (userInput) => {
+  handleSelectionList = async (userInput) => {
     //create a suggestions list with scoped to this function
     let suggestionsList;
 
     //(1) populate suggestions list:
     //(1A)if an API for where to check lists is provided via props, use that
-    if (this.props.API.isUsing) {
+    if (this.props.API && this.props.API.isUsing) {
       //run the search sending userInput
       let {
         requestFunction,
@@ -56,7 +56,13 @@ class AutoCompleteTextInput extends React.Component {
         requestData,
         requestOptions
       } = this.props.API;
-      requestData['term'] = userInput; //add userInput as search term to the request object.
+      requestData.term = userInput; //add userInput as search term to the request data object.
+
+      if (!requestOptions) {
+        //if a request options prop wasn't passed in, create a blank one.
+        requestOptions = {};
+      }
+      requestOptions.timerLoc = document.getElementById(this.props.id); //add a scope location to attach a timeout timer to on the client side
 
       /* the request function should resolve itself and return an array with the following structure:
         [
@@ -75,15 +81,16 @@ class AutoCompleteTextInput extends React.Component {
         the value from the state should be passed into the callback function to populate the rest of the form appropriately
        */
 
-      requestFunction(requestURL, requestData, requestOptions).then(
-        (response) => {
-          suggestionsList = response; //set the suggestions list to the returned array of suggestions from the API
-          if (Array.isArray(suggestionsList)) {
-            // confirm it is in fact an array, then
-            this.filterSuggestions(suggestionsList, userInput);
-          }
-        }
+      // Get the list of suggestions from the provided API, piping in requestData to be sent to the server and client side request options.
+      suggestionsList = await requestFunction(
+        requestURL,
+        requestData,
+        requestOptions
       );
+      if (Array.isArray(suggestionsList)) {
+        // confirm it is in fact an array, then
+        this.filterSuggestions(suggestionsList, userInput);
+      }
 
       //also do the callback in this.props.API?
     }
