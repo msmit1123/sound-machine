@@ -44,21 +44,20 @@ const autoCompleteInterface = {
       clearTimeout(options.timerLoc.timer);
     }
 
-    //start a new client side timer in case user is typing, server doesn't get spammed with requests until user stops typing.
-    options.timerLoc.timer = setTimeout(() => {
-      alert('a');
-      return autoCompleteInterface.fetchData(urlToAPI, requestDataObj);
-    }, options.delay);
+    // create a promise and link it to the timer
+    let promise = new Promise((resolve, reject) => {
+      //start a new client side timer in case user is typing, server doesn't get spammed with requests until user stops typing, at which point it only sends the final request
+      try {
+        options.timerLoc.timer = setTimeout(() => {
+          resolve(autoCompleteInterface.fetchData(urlToAPI, requestDataObj));
+        }, options.delay);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    return promise;
   }
 };
-
-function delay(fn, ms) {
-  let timer = 0;
-  return function(...args) {
-    clearTimeout(timer);
-    timer = setTimeout(fn.bind(this, ...args), ms || 0);
-  };
-}
 
 function onSelectionCallback() {}
 
