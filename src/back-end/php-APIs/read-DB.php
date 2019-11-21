@@ -48,12 +48,12 @@ switch ($_POST['type']) {
     }
     break;
 
-  // (3D) Search by sound name - return entire row
-  case "name-all":
-    $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `name` LIKE ? LIMIT {$resultLimit}");
+  // (3D) Search by unique id - return entire row
+  case "id-all":
+    $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `id` LIKE ? LIMIT 1");
     $stmt->execute(["%" . $_POST['term'] . "%"]);
     while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
-      $data[$row["id"]] = $row;
+      $data = $row;
     }
     break;
 }

@@ -27,6 +27,14 @@ class AutoCompleteTextInput extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    document.addEventListener('click', this.closeSelectionBox);
+  };
+
+  componentWillUnmount = () => {
+    document.removeEventListener('click', this.closeSelectionBox);
+  };
+
   onChange = (event) => {
     //get form input
     const userInput = event.currentTarget.value;
@@ -121,6 +129,7 @@ class AutoCompleteTextInput extends React.Component {
     }
   };
 
+  //selected Entry should be ['selection name','unique identifier to be passed to callback']
   makeSelection = (selectedEntry) => {
     this.setState({
       currentSuggestion: 0,
@@ -130,12 +139,31 @@ class AutoCompleteTextInput extends React.Component {
     });
     // update the parent component with new info
     this.props.handleChange(selectedEntry[0]);
+
+    //if API is enable and a callback function is present, do it
+    if (
+      this.props.API &&
+      this.props.API.isUsing &&
+      this.props.API.onSelectionCallback
+    ) {
+      //pipe selected entry unique identifier into the selection
+      this.props.API.onSelectionCallback(selectedEntry[1]);
+    }
   };
 
+  closeSelectionBox = () => {
+    this.setState({ isShowingSuggestions: false });
+  };
+
+  //when a suggestion is clicked
   onClick = (event) => {
     const selectionClicked = event.currentTarget.getAttribute('index');
-    const selectedEntry = this.state.filteredSuggestions[selectionClicked];
-    this.makeSelection(selectedEntry);
+    if (selectionClicked !== null) {
+      const selectedEntry = this.state.filteredSuggestions[selectionClicked];
+      this.makeSelection(selectedEntry);
+    } else {
+      this.closeSelectionBox();
+    }
   };
 
   onMouseEnter = (event) => {

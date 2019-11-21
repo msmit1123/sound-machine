@@ -38,6 +38,19 @@ class FormOverlay extends React.Component {
     this.setState({ [propertyName]: str });
   };
 
+  populateFormWithAutoCompleteData = async (uniqueIdentifier) => {
+    //build + make a request to the API to get the entire row of unique identifier request
+    const response = await autoCompleteInterface.fetchData(
+      'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
+      { type: 'id-all', term: uniqueIdentifier }
+    );
+
+    //update state of this form to be
+    this.setState({
+      url: response.link
+    });
+  };
+
   render() {
     return (
       <div
@@ -67,8 +80,8 @@ class FormOverlay extends React.Component {
               requestURL:
                 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
               requestData: { type: 'name' },
-              //requestOptions: {},
-              onSelectionCallback: '' //this is where I tell it what to do on selection...
+              requestOptions: {}, //optional
+              onSelectionCallback: this.populateFormWithAutoCompleteData //this is where I tell it what to do on selection...
             }}
             value={this.state.title}
             handleChange={this.handleChangeFor('title')}
