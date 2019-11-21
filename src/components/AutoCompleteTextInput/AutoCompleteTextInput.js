@@ -43,9 +43,6 @@ class AutoCompleteTextInput extends React.Component {
   };
 
   handleSelectionList = async (userInput) => {
-    //create a suggestions list with scoped to this function
-    let suggestionsList;
-
     //(1) populate suggestions list:
     //(1A)if an API for where to check lists is provided via props, use that
     if (this.props.API && this.props.API.isUsing) {
@@ -74,14 +71,13 @@ class AutoCompleteTextInput extends React.Component {
        */
 
       // Get the list of suggestions from the provided API, piping in requestData to be sent to the server and client side request options.
-      suggestionsList = await requestFunction(
+      const suggestionsList = await requestFunction(
         requestURL,
         requestData,
         requestOptions
       );
+      console.log(suggestionsList);
       this.filterSuggestions(suggestionsList, userInput);
-
-      //also do the callback in this.props.API?
     }
 
     //(1B) if an API is not provided and a static list is provided via props, set the suggestions list to that
@@ -91,7 +87,7 @@ class AutoCompleteTextInput extends React.Component {
       // mid: [['a'],['b'],['c'],['d']]
       // thorough: [['apple','uniqueIdA'],['bobcat','uniqueIdB'],['castle','uniqueIdC']]
 
-      suggestionsList = []; //ensure we have a blank array
+      const suggestionsList = []; //ensure we have a blank array
 
       // it must must be converted to the latter format
       this.props.staticList.forEach((item, index) => {
@@ -106,35 +102,40 @@ class AutoCompleteTextInput extends React.Component {
           suggestionsList.push([item, 'ID' + index]);
         }
       });
-      console.log(suggestionsList);
       this.filterSuggestions(suggestionsList, userInput);
     }
   };
 
   filterSuggestions = (suggestionsList, userInput) => {
-    //client side rendering of list:
-    const filteredSuggestions = suggestionsList.filter(
-      (item) => item[0].toLowerCase().indexOf(userInput.toLowerCase()) > -1
-    );
+    if (Array.isArray(suggestionsList)) {
+      //client side rendering of list:
+      const filteredSuggestions = suggestionsList.filter(
+        (item) => item[0].toLowerCase().indexOf(userInput.toLowerCase()) > -1
+      );
 
-    this.setState({
-      currentSuggestion: 0,
-      filteredSuggestions: filteredSuggestions,
-      isShowingSuggestions: true
-    });
+      this.setState({
+        currentSuggestion: 0,
+        filteredSuggestions: filteredSuggestions,
+        isShowingSuggestions: true
+      });
+    }
   };
 
-  onClick = (event) => {
-    const selectedEntry = event.currentTarget.innerText;
-
+  makeSelection = (selectedEntry) => {
     this.setState({
       currentSuggestion: 0,
       filteredSuggestions: [],
       isShowingSuggestions: false,
-      userInput: selectedEntry //update the controlled input in this component
+      userInput: selectedEntry[0] //update the controlled input in this component
     });
     // update the parent component with new info
-    this.props.handleChange(selectedEntry);
+    this.props.handleChange(selectedEntry[0]);
+  };
+
+  onClick = (event) => {
+    const selectionClicked = event.currentTarget.getAttribute('index');
+    const selectedEntry = this.state.filteredSuggestions[selectionClicked];
+    this.makeSelection(selectedEntry);
   };
 
   onMouseEnter = (event) => {
@@ -149,13 +150,7 @@ class AutoCompleteTextInput extends React.Component {
     //enter pressed
     if (event.keyCode === 13) {
       const selectedEntry = filteredSuggestions[currentSuggestion];
-      this.setState({
-        currentSuggestion: 0,
-        isShowingSuggestions: false,
-        userInput: selectedEntry //update the controlled input in this component
-      });
-      // update the parent component with new info
-      this.props.handleChange(selectedEntry);
+      this.makeSelection(selectedEntry);
     }
 
     //Up arrow pressed
@@ -197,6 +192,7 @@ class AutoCompleteTextInput extends React.Component {
                   className={className}
                   key={item[1]}
                   index={index}
+                  uniqueid={item[1]}
                   onClick={this.onClick}
                   onMouseEnter={this.onMouseEnter}
                 >

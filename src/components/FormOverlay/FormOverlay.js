@@ -60,9 +60,9 @@ class FormOverlay extends React.Component {
             id='clip-title'
             className='autocomplete__input'
             placeholder='Name of sound'
-            staticList={[['a'], ['apple'], ['babboon']]} //dummy static list provided as proof of concept / fallback option
+            staticList={[['a', '1'], ['apple', 'asd'], 'babboon']} //dummy static list provided as proof of concept / fallback option
             API={{
-              isUsing: false, //confirm we want to use the API in this form
+              isUsing: true, //confirm we want to use the API in this form
               requestFunction: autoCompleteInterface.handleRequest,
               requestURL:
                 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',

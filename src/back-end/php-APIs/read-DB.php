@@ -30,12 +30,12 @@ switch ($_POST['type']) {
   default :
     break;
 
-  // (3B) search by sound sound name - return sound name only
+  // (3B) search by sound sound name - return sound name + row ID only
   case "name":
   $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `name` LIKE ? LIMIT {$resultLimit}");
     $stmt->execute(["%" . $_POST['term'] . "%"]);
     while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
-      $data[] = $row['name'];
+      $data[] = [$row['name'], $row['id']];
     }
     break;
 
