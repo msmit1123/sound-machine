@@ -1,4 +1,9 @@
 <?php
+/**
+ * API NOTES for 'read-DB.php'
+ * available options this api will accept:
+*/
+
 // (1) connect to db
 $host = 'localhost';
 $dbname = 'sunddpxk_sound_machine_app';

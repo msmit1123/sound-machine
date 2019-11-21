@@ -22,7 +22,7 @@ class AutoCompleteTextInput extends React.Component {
        *
        * If it is part of a larger application and you want to do
        * something with/from  the parent component, the parent component must pass in a
-       * function as a prop to update whatever it is doing with this value.
+       * function as a prop (called handleChange) to update whatever it is doing with this value.
        */
     };
   }
@@ -66,19 +66,11 @@ class AutoCompleteTextInput extends React.Component {
 
       /* the request function should resolve itself and return an array with the following structure:
         [
-          {id:12, name: 'suggestion 1'},
-          {id:14, name: 'suggestion 2'},
-          {id:22, name: 'suggestion 3'},
+          [informationWeSought,optionalUniqueIdenfifier],
+          [informationWeSought,optionalUniqueIdenfifier],
+          [informationWeSought,optionalUniqueIdenfifier],
           etc
         ]
-
-        on hover or arrow up down over,
-        A second call to the API should request the id and be returned with the entire entry
-        {id:12, name: 'suggestion 1', link: 'http...'}
-        and store it in the state.
-
-        on click or press enter,
-        the value from the state should be passed into the callback function to populate the rest of the form appropriately
        */
 
       // Get the list of suggestions from the provided API, piping in requestData to be sent to the server and client side request options.
@@ -87,17 +79,34 @@ class AutoCompleteTextInput extends React.Component {
         requestData,
         requestOptions
       );
-      if (Array.isArray(suggestionsList)) {
-        // confirm it is in fact an array, then
-        this.filterSuggestions(suggestionsList, userInput);
-      }
+      this.filterSuggestions(suggestionsList, userInput);
 
       //also do the callback in this.props.API?
     }
 
     //(1B) if an API is not provided and a static list is provided via props, set the suggestions list to that
     else if (this.props.staticList) {
-      suggestionsList = this.props.staticList;
+      // will accept a static list format of varying thoroughness:
+      // lazy: ['a','b','c','d'] or
+      // mid: [['a'],['b'],['c'],['d']]
+      // thorough: [['apple','uniqueIdA'],['bobcat','uniqueIdB'],['castle','uniqueIdC']]
+
+      suggestionsList = []; //ensure we have a blank array
+
+      // it must must be converted to the latter format
+      this.props.staticList.forEach((item, index) => {
+        if (Array.isArray(item)) {
+          suggestionsList.push(item); // handle thorough formatting
+          if (!suggestionsList[index][1]) {
+            // handle mid formating
+            suggestionsList[index].push('ID' + index);
+          }
+        } else {
+          // handle lazy formating
+          suggestionsList.push([item, 'ID' + index]);
+        }
+      });
+      console.log(suggestionsList);
       this.filterSuggestions(suggestionsList, userInput);
     }
   };
@@ -105,7 +114,7 @@ class AutoCompleteTextInput extends React.Component {
   filterSuggestions = (suggestionsList, userInput) => {
     //client side rendering of list:
     const filteredSuggestions = suggestionsList.filter(
-      (item) => item.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+      (item) => item[0].toLowerCase().indexOf(userInput.toLowerCase()) > -1
     );
 
     this.setState({
@@ -186,12 +195,12 @@ class AutoCompleteTextInput extends React.Component {
               return (
                 <li
                   className={className}
-                  key={item}
+                  key={item[1]}
                   index={index}
                   onClick={this.onClick}
                   onMouseEnter={this.onMouseEnter}
                 >
-                  {item}
+                  {item[0]}
                 </li>
               );
             })}

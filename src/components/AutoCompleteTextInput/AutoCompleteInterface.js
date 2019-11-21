@@ -1,34 +1,6 @@
 const autoCompleteInterface = {
-  fetchData: (urlToAPI, requestDataObj) => {
-    //build data into the request
-    const data = new FormData();
-    for (let key in requestDataObj) {
-      data.append(key, requestDataObj[key]);
-    }
-    /**
-     * API NOTES for:
-     * 'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php'
-     * available options the api will accept:
-     */
-
-    let promise = new Promise((resolve, reject) => {
-      //set up a new AJAX request
-      const req = new XMLHttpRequest();
-      req.open('POST', urlToAPI);
-
-      //define a function of what to do when a response is received error or complete
-      req.onerror = () =>
-        reject(console.log(`Error ${req.status}: ${req.statusText}`)); // on error, log
-
-      req.onload = () => resolve(JSON.parse(req.response)); // on success parse and return the response
-
-      req.send(data);
-    });
-
-    return promise;
-  },
-
-  handleRequest: async (
+  //this function will prepare client side options for and manage issuing of requests to send to the server
+  handleRequest: (
     urlToAPI, // url to API
     requestDataObj, // Data to be sent to server
     requestOptions // options handled client side
@@ -59,6 +31,32 @@ const autoCompleteInterface = {
       });
       return promise;
     }
+  },
+
+  //this function will make the call to the server side API
+  fetchData: (urlToAPI, requestDataObj) => {
+    //build data into the request
+    const data = new FormData();
+    for (let key in requestDataObj) {
+      data.append(key, requestDataObj[key]);
+    }
+
+    //create a promise
+    let promise = new Promise((resolve, reject) => {
+      //set up a new AJAX request
+      const req = new XMLHttpRequest();
+      req.open('POST', urlToAPI);
+
+      //define a function of what to do when a response is received error or complete
+      req.onerror = () =>
+        reject(console.log(`Error ${req.status}: ${req.statusText}`)); // on error, log
+
+      req.onload = () => resolve(JSON.parse(req.response)); // on success parse and return the response
+
+      req.send(data);
+    });
+
+    return promise;
   }
 };
 
