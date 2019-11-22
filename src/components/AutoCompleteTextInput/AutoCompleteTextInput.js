@@ -2,6 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 
 import './AutoCompleteTextInput.scss';
+import { autoCompleteInterface } from './AutoCompleteInterface';
 
 class AutoCompleteTextInput extends React.Component {
   constructor(props) {
@@ -84,7 +85,6 @@ class AutoCompleteTextInput extends React.Component {
         requestData,
         requestOptions
       );
-      console.log(suggestionsList);
       this.filterSuggestions(suggestionsList, userInput);
     }
 
@@ -187,6 +187,22 @@ class AutoCompleteTextInput extends React.Component {
         return;
       }
       this.setState({ currentSuggestion: currentSuggestion - 1 });
+    }
+
+    //right arrow pressed for test
+    else if (event.keyCode === 39) {
+      async function test() {
+        const testValue = await autoCompleteInterface.fetchData(
+          'http://mikiesmit.com/fun/das-sound-machine/test2/write-DB.php',
+          {
+            name: 'Piano C3',
+            link:
+              'http://www.mikiesmit.com/libraries/audio/pianoShort/Piano__c3.mp3'
+          }
+        );
+        console.log(testValue);
+      }
+      test();
     }
 
     //Down arrow pressed

@@ -13,49 +13,31 @@ $pdo = new PDO(
 	]
 );
 
-//mikie dev notes for future feature here:
-//this api should be called on submit button press in app
-//get post attributes,
-//validate name
-//validate link points to mp3,wav,or ogg file
-//insert a new row to DB with the name and link
+// Make a request to see if an entry with this name and link already exist
+$name = $_POST['name']; 
+$link = $_POST['link']; 
+$stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `name` = ? AND `link` = ? ");
+$stmt->execute(array($name, $link));
+while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
+  $data = $row;
+}
 
-// (3) establish search parameters of API
-switch ($_POST['type']) {
-  // (3A) default/ invalid search type
-  default :
-    break;
-
-  // (3B) search by sound sound name - return sound name only
-  case "name":
-  $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `name` LIKE ? LIMIT {$resultLimit}");
-    $stmt->execute(["%" . $_POST['term'] . "%"]);
-    while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
-      $data[] = $row['name'];
-    }
-    break;
-
-  // (3C) search by link - return link only
-  case "link":
-    $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `link` LIKE ? LIMIT {$resultLimit}");
-    $stmt->execute(["%" . $_POST['term'] . "%"]);
-    while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
-      $data[] = $row['link'];
-    }
-    break;
-
-  // (3D) Search by sound name - return entire row
-  case "name-all":
-    $stmt = $pdo->prepare("SELECT * FROM `soundLinks` WHERE `name` LIKE ? LIMIT {$resultLimit}");
-    $stmt->execute(["%" . $_POST['term'] . "%"]);
-    while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
-      $data[$row["id"]] = $row;
-    }
-    break;
+//if it is unique,
+if($data){
+  //validate the link is valid using the get_headers() function 
+  $headers = @get_headers($link); 
+  // check for string position of 200 indicating success therefore valid link
+  if($headers && strpos( $headers[0], '200')) { 
+    
+    echo '"success2"';
+    
+  }     
+  
+  //if($link points to valid file){
+    //add a new entry to the database of the name and link
+  //}
 }
 
 
-// (4) RETURN RESULT
 $pdo = null;
-echo json_encode($data);
 ?>

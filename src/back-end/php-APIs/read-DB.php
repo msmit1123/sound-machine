@@ -2,6 +2,12 @@
 /**
  * API NOTES for 'read-DB.php'
  * available options this api will accept:
+ * term: \\the search term
+ * limit: \\max number of results to return
+ * type: \\can be any of the following
+ *      name      \\ returns [['response1','id1'],['response2','id2'],etc]
+ *      link      \\ returns ['url1','url2',etc]
+ *      id-all    \\ returns an object of the complete row 
 */
 
 // (1) connect to db
