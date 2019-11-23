@@ -42,20 +42,20 @@ class FormOverlay extends React.Component {
   saveForm = async () => {
     this.props.updateButton(this.state);
 
-    const testValue = await autoCompleteInterface.fetchData(
-      'http://mikiesmit.com/fun/das-sound-machine/test2/write-DB.php',
+    const response = await autoCompleteInterface.fetchData(
+      'http://mikiesmit.com/fun/das-sound-machine/write-DB.php',
       {
         name: this.state.title,
         link: this.state.url
       }
     );
-    console.log(testValue);
+    console.log(response);
   };
 
   populateFormWithAutoCompleteData = async (uniqueIdentifier) => {
     //build + make a request to the API to get the entire row of unique identifier request
     const response = await autoCompleteInterface.fetchData(
-      'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
+      'http://mikiesmit.com/fun/das-sound-machine/read-DB.php',
       { type: 'id-all', term: uniqueIdentifier }
     );
 
@@ -92,7 +92,7 @@ class FormOverlay extends React.Component {
               isUsing: true, //confirm we want to use the API in this form
               requestFunction: autoCompleteInterface.handleRequest,
               requestURL:
-                'http://mikiesmit.com/fun/das-sound-machine/test2/read-DB.php',
+                'http://mikiesmit.com/fun/das-sound-machine/read-DB.php',
               requestData: { type: 'name' },
               requestOptions: {}, //optional
               onSelectionCallback: this.populateFormWithAutoCompleteData //this is where I tell it what to do on selection...
