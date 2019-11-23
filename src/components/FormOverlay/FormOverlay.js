@@ -2,10 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import {
-  autoCompleteInterface,
-  selectionCallback
-} from '../../components/AutoCompleteTextInput/AutoCompleteInterface.js';
+import { autoCompleteInterface } from '../../components/AutoCompleteTextInput/AutoCompleteInterface.js';
 
 import './FormOverlay.scss';
 
