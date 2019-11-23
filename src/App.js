@@ -208,6 +208,7 @@ class App extends React.Component {
     const row = target.getAttribute('row-index');
     const clicked = true;
     this.playSound(column, row, clicked);
+    //if recording, save to loop library
     if (this.state.isRecording) {
       const loopCopy = deepCopy(this.state.loop);
       loopCopy.push({
@@ -215,7 +216,8 @@ class App extends React.Component {
         column: column,
         row: row
       });
-      this.setState({ loop: loopCopy });
+      //delay updating the loop libary by the timing record interval so that it doesnt play the note you just recorded
+      setTimeout(() => this.setState({ loop: loopCopy }), LOOP_TIMING_FIDELITY);
     }
   }
   playSound(columnNum, rowNum, clicked) {
@@ -354,8 +356,17 @@ class App extends React.Component {
 
   //set up keyboard binding
   handleKeyDown(event) {
+    const key = document.getElementById(event.key);
+    //handle spacebar
+    if (event.key === ' ') {
+      if (!this.state.isSettingsMode) {
+        event.preventDefault();
+        this.togglePlay();
+      }
+    }
+
+    //handle everything else
     if (this.state.isOn && !this.state.isSettingsMode) {
-      const key = document.getElementById(event.key);
       if (keyPresentlyHeld[event.key]) {
         return;
       }

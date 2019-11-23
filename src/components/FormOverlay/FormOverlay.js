@@ -2,10 +2,15 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  autoCompleteInterface,
+  selectionCallback
+} from '../../components/AutoCompleteTextInput/AutoCompleteInterface.js';
 
 import './FormOverlay.scss';
 
 import Button from '../Button/Button.js';
+import AutoCompleteTextInput from '../AutoCompleteTextInput/AutoCompleteTextInput';
 
 class FormOverlay extends React.Component {
   constructor(props) {
@@ -21,10 +26,43 @@ class FormOverlay extends React.Component {
       volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
       speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
+    this.saveForm = this.saveForm.bind(this);
+    this.handleEventChangeFor = this.handleEventChangeFor.bind(this);
+    this.handleChangeFor = this.handleChangeFor.bind(this);
   }
 
-  handleChangeFor = (propertyName) => (event) => {
-    this.setState({ [propertyName]: event.target.value });
+  handleEventChangeFor = (propertyName) => (event) => {
+    this.handleChangeFor(propertyName)(event.target.value);
+  };
+
+  handleChangeFor = (propertyName) => (str) => {
+    this.setState({ [propertyName]: str });
+  };
+
+  saveForm = async () => {
+    this.props.updateButton(this.state);
+
+    const response = await autoCompleteInterface.fetchData(
+      'http://mikiesmit.com/fun/das-sound-machine/write-DB.php',
+      {
+        name: this.state.title,
+        link: this.state.url
+      }
+    );
+    console.log(response);
+  };
+
+  populateFormWithAutoCompleteData = async (uniqueIdentifier) => {
+    //build + make a request to the API to get the entire row of unique identifier request
+    const response = await autoCompleteInterface.fetchData(
+      'http://mikiesmit.com/fun/das-sound-machine/read-DB.php',
+      { type: 'id-all', term: uniqueIdentifier }
+    );
+
+    //update state of this form to be
+    this.setState({
+      url: response.link
+    });
   };
 
   render() {
@@ -41,15 +79,31 @@ class FormOverlay extends React.Component {
             type='text'
             maxLength='1'
             value={this.state.pressKey}
-            onChange={this.handleChangeFor('pressKey')}
+            onChange={this.handleEventChangeFor('pressKey')}
           />
           <hr />
           Clip Title:{' '}
-          <input
-            className='form__input'
-            type='text'
+          <AutoCompleteTextInput
+            id='clip-title'
+            className='autocomplete__input'
+            placeholder='Name of sound'
+            staticList={[['a', '1'], ['apple', 'asd'], 'babboon']} //dummy static list provided as proof of concept / fallback option
+            API={{
+              isUsing: true, //confirm we want to use the API in this form
+              requestFunction: autoCompleteInterface.handleRequest,
+              requestURL:
+                'http://mikiesmit.com/fun/das-sound-machine/read-DB.php',
+              requestData: { type: 'name' },
+              requestOptions: {}, //optional
+              onSelectionCallback: this.populateFormWithAutoCompleteData //this is where I tell it what to do on selection...
+            }}
             value={this.state.title}
-            onChange={this.handleChangeFor('title')}
+            handleChange={this.handleChangeFor('title')}
+            //pass in an API / autocomplete library to reference
+            //optionally a static list of options in lieu of API
+            //optionally pass in max number of desired results
+            //optionally pass in the number of characters before it starts outputting suggestions
+            //optionally tell it to only query this one or link a series of queries together
           />
           <hr />
           URL:{' '}
@@ -57,7 +111,7 @@ class FormOverlay extends React.Component {
             className='form__input'
             type='text'
             value={this.state.url}
-            onChange={this.handleChangeFor('url')}
+            onChange={this.handleEventChangeFor('url')}
           />
           <hr />
           Volume: {this.state.volume}
@@ -67,7 +121,7 @@ class FormOverlay extends React.Component {
             min='0'
             max='100'
             value={this.state.volume}
-            onChange={this.handleChangeFor('volume')}
+            onChange={this.handleEventChangeFor('volume')}
           />
           <hr />
           Playback Speed: {this.state.speed / 100 + 'x'}
@@ -77,7 +131,7 @@ class FormOverlay extends React.Component {
             min='25'
             max='400'
             value={this.state.speed}
-            onChange={this.handleChangeFor('speed')}
+            onChange={this.handleEventChangeFor('speed')}
           />
           <hr />
           <div>
@@ -87,10 +141,7 @@ class FormOverlay extends React.Component {
             >
               <FontAwesomeIcon icon={faTrashAlt} />
             </Button>
-            <Button
-              className='form__button'
-              onClick={() => this.props.updateButton(this.state)}
-            >
+            <Button className='form__button' onClick={this.saveForm}>
               Save
             </Button>
           </div>

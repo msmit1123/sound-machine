@@ -1,0 +1,38 @@
+@import '../../_variables.scss';
+
+.autocomplete {
+  &__container {
+    position: relative;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  &__input {
+    padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  &__suggestions-list {
+    position: absolute;
+    top: 25px;
+    list-style-type: none;
+    padding: 0;
+    background-color: white;
+    border: 1px solid $button-color;
+    box-shadow: 1px 1px 4px 4px rgba(0, 0, 0, 0.5);
+    min-width: 50%;
+  }
+  &__suggestion-item {
+    padding: 4px;
+    color: black;
+    font-weight: 100;
+    &--active {
+      background-color: $accessory-color;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+  &__no-suggestions {
+    color: $accessory-color;
+  }
+}
