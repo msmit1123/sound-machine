@@ -51,8 +51,7 @@ const autoCompleteInterface = {
       req.onerror = () =>
         reject(console.log(`Error ${req.status}: ${req.statusText}`)); // on error, log
 
-      //req.onload = () => resolve(JSON.parse(req.response)); // on success parse and return the response
-      req.onload = () => resolve(alert(req.response));
+      req.onload = () => resolve(JSON.parse(req.response)); // on success parse and return the response
 
       req.send(data);
     });

@@ -26,6 +26,7 @@ class FormOverlay extends React.Component {
       volume: this.props.clipData.volume ? this.props.clipData.volume : 100,
       speed: this.props.clipData.speed ? this.props.clipData.speed : 100
     });
+    this.saveForm = this.saveForm.bind(this);
     this.handleEventChangeFor = this.handleEventChangeFor.bind(this);
     this.handleChangeFor = this.handleChangeFor.bind(this);
   }
@@ -36,6 +37,19 @@ class FormOverlay extends React.Component {
 
   handleChangeFor = (propertyName) => (str) => {
     this.setState({ [propertyName]: str });
+  };
+
+  saveForm = async () => {
+    this.props.updateButton(this.state);
+
+    const testValue = await autoCompleteInterface.fetchData(
+      'http://mikiesmit.com/fun/das-sound-machine/test2/write-DB.php',
+      {
+        name: this.state.title,
+        link: this.state.url
+      }
+    );
+    console.log(testValue);
   };
 
   populateFormWithAutoCompleteData = async (uniqueIdentifier) => {
@@ -127,10 +141,7 @@ class FormOverlay extends React.Component {
             >
               <FontAwesomeIcon icon={faTrashAlt} />
             </Button>
-            <Button
-              className='form__button'
-              onClick={() => this.props.updateButton(this.state)}
-            >
+            <Button className='form__button' onClick={this.saveForm}>
               Save
             </Button>
           </div>

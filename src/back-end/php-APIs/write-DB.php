@@ -22,38 +22,37 @@ while ($row = $stmt->fetch(PDO::FETCH_NAMED)) {
   $data = $row;
 }
 
+$responseMessage = [];
+
 //if it is unique,
-if($data){
-  //validate the link is valid using the get_headers() function 
-  $headers = @get_headers($link); 
+if(!$data){
+  //get headers of the link to validate
+  $headers = get_headers($link); 
   
   // check for string position of 200 indicating success therefore valid link
   if($headers && strpos( $headers[0], '200')) { 
-
-
-    // if(check_file_is_audio($link)){
-    //   echo '"success4"';
-    // } else {
-    //   echo '"failed"';
-    // }
-
-    // $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    // $type = finfo_file($finfo, $link);
-    // echo "a" . $type . "b";
-    // finfo_close($finfo);
-    // echo "aaaaaa";
-
-    $headers = get_headers($link);
-    var_dump($headers);
-
     
+    // while headers can easily be spoofed, we're not downloading the actual file or running
+    // it on our server. we're just checking the url to files we don't control, so some precaution
+    // is better than none. Confirm headers include 'audio'
+    if (strpos($headers, 'audio') !== false) {
+      
+      //if they do, add entry to the database
+      //$status = addNameLinkToDatabase($pdo, $name, $link);
+      $responseMessage = addNameLinkToDatabase($pdo, $name, $link);
+
+      //return success / fail message
+      // echo $status;
+    }  
   }     
-
-    //add a new entry to the database of the name and link
-
 }
 
+echo json_encode($responseMessage);
 
+//reset data variable
+$data = null;
+
+//close pdo connection
 $pdo = null;
 
 
@@ -61,25 +60,16 @@ $pdo = null;
 
 
 
-function check_file_is_audio( $tmp ){
-  $allowed = array(
-      'audio/mpeg', 'audio/x-mpeg', 'audio/mpeg3', 'audio/x-mpeg-3', 'audio/aiff', 
-      'audio/mid', 'audio/x-aiff', 'audio/x-mpequrl','audio/midi', 'audio/x-mid', 
-      'audio/x-midi','audio/wav','audio/x-wav','audio/xm','audio/x-aac','audio/basic',
-      'audio/flac','audio/mp4','audio/x-matroska','audio/ogg','audio/s3m','audio/x-ms-wax',
-      'audio/xm'
-  );
-  
-  // check REAL MIME type
-  $finfo = finfo_open(FILEINFO_MIME_TYPE);
-  $type = finfo_file($finfo, $tmp );
-  finfo_close($finfo);
-  
-  // check to see if REAL MIME type is inside $allowed array
-  if( in_array($type, $allowed) ) {
-      return true;
-  } else {
-      return false;
+  function addNameLinkToDatabase($pdo, $name,$link){
+    try{
+      $stmt = $pdo->prepare("INSERT INTO `soundLinks` (`name`, `link`) VALUES (?, ?) ");
+      $stmt->execute(array($name, $link));
+
+      //on success return
+      return ["Records inserted successfully."];
+    } catch(PDOException $e){
+      die("ERROR: Could not able to execute $stmt. " . $e->getMessage());
+    }
   }
-}
+
 ?>
